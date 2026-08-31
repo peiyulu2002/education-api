@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#4A90D9">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Pretty English">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<title>Pretty English</title>
+<style>
+  :root {
+    --primary: #4A90D9; --primary-dark: #3A7BC8; --primary-light: #E8F1FB;
+    --danger: #E74C3C; --danger-light: #FDECEA;
+    --success: #27AE60; --success-light: #E8F8F0;
+    --warning: #F39C12; --warning-light: #FEF5E7;
+    --text-main: #2C3E50; --text-sub: #7F8C8D; --text-light: #BDC3C7;
+    --bg-page: #F5F6F8; --bg-card: #FFFFFF;
+    --border: #ECEEF0; --radius: 12px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background:var(--bg-page); color:var(--text-main); font-size:15px; line-height:1.5; }
+
+  /* ===== Login ===== */
+  #loginPage { position:fixed; inset:0; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); display:flex; align-items:center; justify-content:center; z-index:9999; }
+  .login-box { background:#fff; border-radius:20px; padding:36px 28px; width:90%; max-width:360px; box-shadow:0 20px 60px rgba(0,0,0,0.3); text-align:center; }
+  .login-box .logo { font-size:48px; margin-bottom:12px; }
+  .login-box h2 { font-size:20px; margin-bottom:6px; }
+  .login-box .sub { color:var(--text-sub); margin-bottom:24px; font-size:13px; }
+  .login-box input { width:100%; padding:14px 16px; border:1px solid var(--border); border-radius:10px; font-size:15px; margin-bottom:12px; outline:none; }
+  .login-box input:focus { border-color:var(--primary); }
+  .login-box .btn-login { width:100%; padding:14px; background:var(--primary); color:#fff; border:none; border-radius:10px; font-size:16px; cursor:pointer; }
+  .login-box .btn-login:active { background:var(--primary-dark); }
+  .login-hint { margin-top:14px; font-size:12px; color:var(--text-light); }
+  .lang-switch-login { margin-top:18px; display:flex; justify-content:center; gap:4px; }
+  .lang-switch-login button { background:transparent; border:1px solid var(--border); border-radius:6px; padding:4px 14px; font-size:12px; color:var(--text-sub); cursor:pointer; }
+  .lang-switch-login button.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+
+  /* ===== App Layout ===== */
+  #app { display:none; flex-direction:column; min-height:100vh; }
+
+  /* Top bar */
+  .topbar { height:52px; background:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 16px; position:sticky; top:0; z-index:50; border-bottom:1px solid var(--border); }
+  .topbar-title { font-size:17px; font-weight:700; }
+  .topbar-right { display:flex; align-items:center; gap:12px; }
+  .lang-switch { display:flex; gap:2px; }
+  .lang-switch button { background:transparent; border:1px solid var(--border); border-radius:4px; padding:2px 8px; font-size:11px; color:var(--text-sub); cursor:pointer; }
+  .lang-switch button.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+  .logout-btn { color:var(--danger); font-size:13px; cursor:pointer; background:none; border:none; }
+
+  /* Pages */
+  .page-area { flex:1; padding-bottom:70px; overflow-y:auto; }
+  .page { display:none; }
+  .page.active { display:block; }
+
+  /* Cards */
+  .card { background:#fff; border-radius:var(--radius); margin:12px 16px; padding:16px; box-shadow:0 1px 4px rgba(0,0,0,0.05); }
+  .card-title { font-size:16px; font-weight:700; margin-bottom:12px; }
+  .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+
+  /* Buttons */
+  .btn { padding:10px 16px; border:none; border-radius:10px; cursor:pointer; font-size:14px; display:inline-flex; align-items:center; gap:6px; }
+  .btn-primary { background:var(--primary); color:#fff; } .btn-primary:active { background:var(--primary-dark); }
+  .btn-success { background:var(--success); color:#fff; }
+  .btn-danger { background:var(--danger); color:#fff; }
+  .btn-outline { background:#fff; border:1px solid var(--border); color:var(--text-sub); }
+  .btn-sm { padding:6px 12px; font-size:12px; border-radius:8px; }
+  .btn-block { width:100%; justify-content:center; padding:14px; font-size:15px; }
+  .add-fab { position:fixed; bottom:80px; right:16px; width:52px; height:52px; border-radius:50%; background:var(--primary); color:#fff; border:none; font-size:24px; box-shadow:0 4px 16px rgba(74,144,217,0.4); cursor:pointer; z-index:100; display:flex; align-items:center; justify-content:center; }
+
+  /* Stats */
+  .stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:12px 16px; }
+  .stat-card { background:#fff; border-radius:var(--radius); padding:16px; box-shadow:0 1px 4px rgba(0,0,0,0.05); }
+  .stat-label { font-size:12px; color:var(--text-sub); margin-bottom:6px; }
+  .stat-value { font-size:24px; font-weight:700; }
+  .stat-value.danger { color:var(--danger); } .stat-value.success { color:var(--success); }
+
+  /* List items (replacing tables) */
+  .list-item { background:#fff; border-radius:var(--radius); margin:0 16px 8px; padding:14px 16px; box-shadow:0 1px 2px rgba(0,0,0,0.04); }
+  .li-row { display:flex; justify-content:space-between; align-items:center; }
+  .li-main { flex:1; }
+  .li-title { font-size:15px; font-weight:600; }
+  .li-sub { font-size:12px; color:var(--text-sub); margin-top:3px; }
+  .li-right { text-align:right; }
+  .li-actions { display:flex; gap:8px; margin-top:10px; padding-top:10px; border-top:1px solid var(--border); }
+
+  /* Badge */
+  .badge { padding:2px 8px; border-radius:10px; font-size:11px; font-weight:500; display:inline-block; }
+  .badge-warning { background:var(--warning-light); color:var(--warning); }
+  .badge-danger { background:var(--danger-light); color:var(--danger); }
+  .badge-success { background:var(--success-light); color:var(--success); }
+  .badge-info { background:var(--primary-light); color:var(--primary); }
+
+  /* Search */
+  .search-bar { margin:0 16px 12px; }
+  .search-bar input { width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:10px; font-size:14px; outline:none; background:#fff; }
+  .search-bar input:focus { border-color:var(--primary); }
+
+  /* Filter chips */
+  .chip-row { display:flex; gap:8px; margin:0 16px 12px; overflow-x:auto; }
+  .chip { padding:6px 14px; border-radius:16px; font-size:13px; white-space:nowrap; cursor:pointer; background:#fff; border:1px solid var(--border); color:var(--text-sub); }
+  .chip.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+
+  /* Empty */
+  .empty { text-align:center; padding:48px 20px; color:var(--text-light); font-size:14px; }
+
+  /* Bottom Sheet (modal) */
+  .overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; display:flex; align-items:flex-end; justify-content:center; }
+  .sheet { background:#fff; width:100%; max-width:500px; border-radius:20px 20px 0 0; padding:24px 20px 40px; max-height:85vh; overflow-y:auto; }
+  .sheet h3 { font-size:17px; margin-bottom:20px; text-align:center; }
+  .form-group { margin-bottom:16px; }
+  .form-group label { display:block; font-size:13px; color:var(--text-sub); margin-bottom:6px; }
+  .form-group input, .form-group select, .form-group textarea { width:100%; padding:12px; border:1px solid var(--border); border-radius:10px; font-size:14px; outline:none; background:#fff; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--primary); }
+  .form-group textarea { resize:vertical; min-height:60px; }
+  .form-row { display:flex; gap:10px; } .form-row .form-group { flex:1; }
+  .sheet-actions { display:flex; gap:10px; margin-top:20px; }
+  .sheet-actions .btn { flex:1; justify-content:center; padding:14px; }
+
+  /* Calendar */
+  .cal-toolbar { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; }
+  .cal-nav { display:flex; align-items:center; gap:8px; }
+  .cal-nav button { background:#fff; border:1px solid var(--border); border-radius:8px; padding:6px 12px; font-size:14px; cursor:pointer; }
+  .cal-month-label { font-size:16px; font-weight:700; min-width:100px; text-align:center; }
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:1px; background:var(--border); border:1px solid var(--border); margin:0 16px; border-radius:10px; overflow:hidden; }
+  .cal-wd { background:var(--bg-page); padding:8px 4px; text-align:center; font-size:12px; font-weight:600; color:var(--text-sub); }
+  .cal-day { background:#fff; min-height:56px; padding:4px; cursor:pointer; position:relative; }
+  .cal-day.other { opacity:.3; }
+  .cal-day.today { background:var(--primary-light); }
+  .cal-day-num { font-size:13px; font-weight:600; }
+  .cal-ev { font-size:9px; padding:1px 4px; border-radius:3px; margin-top:2px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+  .cal-ev.lesson { background:#D6E4FF; color:#1A5BB5; }
+  .cal-ev.trial { background:#FFF0D6; color:#B5771A; }
+  .cal-ev.visit { background:#E8F8F0; color:#1A7B43; }
+  .cal-legend { display:flex; gap:12px; margin:8px 16px 12px; font-size:11px; color:var(--text-sub); }
+  .cal-legend span { display:flex; align-items:center; gap:3px; }
+  .cal-legend .dot { width:10px; height:10px; border-radius:2px; display:inline-block; }
+
+  /* Tab Bar */
+  .tab-bar { position:fixed; bottom:0; left:0; right:0; height:64px; background:#fff; border-top:1px solid var(--border); display:flex; z-index:90; }
+  .tab-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; cursor:pointer; color:var(--text-light); }
+  .tab-item.active { color:var(--primary); }
+  .tab-icon { font-size:22px; line-height:1; }
+  .tab-label { font-size:10px; }
+
+  /* Detail sheet */
+  .detail-info { display:grid; grid-template-columns:1fr 1fr; gap:8px 16px; margin-bottom:16px; }
+  .detail-info .full { grid-column:span 2; }
+  .detail-label { font-size:12px; color:var(--text-sub); }
+  .detail-value { font-size:14px; font-weight:500; }
+  .detail-box { background:var(--bg-page); padding:10px 12px; border-radius:8px; }
+  .sub-list { margin-top:16px; }
+  .sub-list-title { font-size:14px; font-weight:600; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .sub-list-item { padding:10px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; font-size:13px; }
+  .sub-list-item:last-child { border:none; }
+</style>
+</head>
+<body>
+
+<!-- ===== Login ===== -->
+<div id="loginPage">
+  <div class="login-box">
+    <div class="logo">📚</div>
+    <h2 id="loginTitle">Pretty English</h2>
+    <div class="sub" id="loginSub">管理后台 · 请登录</div>
+    <input type="text" id="loginUser" placeholder="用户名 / Username" value="admin">
+    <input type="password" id="loginPwd" placeholder="密码 / Password" value="admin123">
+    <button class="btn-login" id="loginBtn" onclick="doLogin()">登 录</button>
+    <div class="login-hint" id="loginHint">默认账号: admin / admin123</div>
+    <div class="lang-switch-login">
+      <button id="langZhLogin" class="active" onclick="setLang('zh')">中文</button>
+      <button id="langEnLogin" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== App ===== -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-title" id="topbarTitle">工作台</div>
+    <div class="topbar-right">
+      <div class="lang-switch"><button id="langZh" class="active" onclick="setLang('zh')">中</button><button id="langEn" onclick="setLang('en')">EN</button></div>
+      <button class="logout-btn" id="logoutBtn" onclick="doLogout()">退出</button>
+    </div>
+  </div>
+
+  <div class="page-area">
+    <!-- Dashboard -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label" id="sL1">学员总数</div><div class="stat-value" id="statStudents">0</div></div>
+        <div class="stat-card"><div class="stat-label" id="sL2">本月排课</div><div class="stat-value" id="statLessons">0</div></div>
+        <div class="stat-card"><div class="stat-label" id="sL3">累计收费</div><div class="stat-value success" id="statRevenue">¥0</div></div>
+        <div class="stat-card"><div class="stat-label" id="sL4">课时预警</div><div class="stat-value danger" id="statWarning">0</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title" id="warnTitle">课时预警</div><button class="btn btn-outline btn-sm" id="viewAllBtn" onclick="switchTab('students')">全部</button></div>
+        <div id="warningList"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title" id="todayTitle">今日课程</div></div>
+        <div id="todayLessons"></div>
+      </div>
+    </div>
+
+    <!-- Students -->
+    <div class="page" id="page-students">
+      <div style="padding:12px 16px 8px; display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-size:17px; font-weight:700;" id="stuTitle">学员档案</div>
+        <button class="btn btn-primary btn-sm" id="addStuBtn" onclick="openStudentModal()">+ 新增</button>
+      </div>
+      <div class="search-bar"><input type="text" id="stuSearch" placeholder="搜索姓名/地址..." oninput="renderStudents()"></div>
+      <div id="stuList"></div>
+    </div>
+
+    <!-- Billing -->
+    <div class="page" id="page-billing">
+      <div style="padding:12px 16px 8px; display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-size:17px; font-weight:700;" id="bilTitle">课时收费</div>
+        <div style="display:flex; gap:6px;">
+          <button class="btn btn-success btn-sm" id="purBtn" onclick="openPurchaseModal()">+ 购课</button>
+          <button class="btn btn-primary btn-sm" id="dedBtn" onclick="openDeductModal()">+ 扣课</button>
+        </div>
+      </div>
+      <div class="search-bar"><input type="text" id="bilSearch" placeholder="搜索学员..." oninput="renderBilling()"></div>
+      <div id="bilList"></div>
+      <div style="margin:20px 16px 12px; font-size:15px; font-weight:700;" id="payTitle2">收费记录</div>
+      <div class="search-bar"><input type="text" id="paySearch" placeholder="搜索学员..." oninput="renderPayments()"></div>
+      <div id="payList"></div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="page" id="page-calendar">
+      <div class="cal-toolbar">
+        <div class="cal-nav">
+          <button id="calPrev" onclick="changeMonth(-1)">‹</button>
+          <span class="cal-month-label" id="calMonthLabel"></span>
+          <button id="calNext" onclick="changeMonth(1)">›</button>
+        </div>
+        <div style="display:flex; gap:4px;">
+          <button class="btn btn-primary btn-sm" id="addLessonBtn" onclick="openEventModal('','lesson')">课</button>
+          <button class="btn btn-outline btn-sm" id="addTrialBtn" onclick="openEventModal('','trial')">试</button>
+          <button class="btn btn-outline btn-sm" id="addVisitBtn" onclick="openEventModal('','visit')">访</button>
+        </div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-legend">
+        <span><span class="dot" style="background:#D6E4FF"></span><span id="lgLesson">课程</span></span>
+        <span><span class="dot" style="background:#FFF0D6"></span><span id="lgTrial">试听</span></span>
+        <span><span class="dot" style="background:#E8F8F0"></span><span id="lgVisit">回访</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab-item active" data-page="dashboard" onclick="switchTab('dashboard')"><span class="tab-icon">🏠</span><span class="tab-label" id="tb1">工作台</span></div>
+    <div class="tab-item" data-page="students" onclick="switchTab('students')"><span class="tab-icon">👤</span><span class="tab-label" id="tb2">学员</span></div>
+    <div class="tab-item" data-page="billing" onclick="switchTab('billing')"><span class="tab-icon">💰</span><span class="tab-label" id="tb3">收费</span></div>
+    <div class="tab-item" data-page="calendar" onclick="switchTab('calendar')"><span class="tab-icon">📅</span><span class="tab-label" id="tb4">日历</span></div>
+  </div>
+</div>
+
+<div id="sheetContainer"></div>
+
+<script>
+/* ===== i18n ===== */
+const I18N = {
+  appTitle:{zh:'Pretty English',en:'Pretty English'},
+  loginTitle:{zh:'Pretty English',en:'Pretty English'},loginSub:{zh:'管理后台 · 请登录',en:'Admin · Sign In'},loginBtn:{zh:'登录',en:'Sign In'},loginHint:{zh:'默认账号: admin / admin123',en:'Default: admin / admin123'},loginUserPh:{zh:'用户名',en:'Username'},loginPwdPh:{zh:'密码',en:'Password'},loginError:{zh:'用户名或密码错误',en:'Invalid credentials'},
+  logout:{zh:'退出',en:'Logout'},
+  nav_dashboard:{zh:'工作台',en:'Dashboard'},nav_students:{zh:'学员',en:'Students'},nav_billing:{zh:'收费',en:'Billing'},nav_calendar:{zh:'日历',en:'Calendar'},
+  stat_students:{zh:'学员总数',en:'Students'},stat_lessons:{zh:'本月排课',en:'This Month'},stat_revenue:{zh:'累计收费',en:'Revenue'},stat_warning:{zh:'课时预警',en:'Low Hours'},
+  warnTitle:{zh:'课时预警',en:'Low-Hour Alerts'},viewAll:{zh:'全部',en:'All'},todayTitle:{zh:'今日课程',en:"Today's Classes"},noWarn:{zh:'暂无预警',en:'No alerts'},noToday:{zh:'今日无安排',en:'Nothing today'},
+  stuTitle:{zh:'学员档案',en:'Students'},addStudent:{zh:'+ 新增',en:'+ Add'},searchStu:{zh:'搜索姓名/地址...',en:'Search...'},noStu:{zh:'暂无学员',en:'No students'},
+  name:{zh:'姓名',en:'Name'},grade:{zh:'年级',en:'Grade'},address:{zh:'地址',en:'Address'},remaining:{zh:'剩余课时',en:'Remaining'},used:{zh:'已用',en:'Used'},status:{zh:'状态',en:'Status'},
+  edit:{zh:'编辑',en:'Edit'},delete:{zh:'删除',en:'Delete'},detail:{zh:'详情',en:'Detail'},buy:{zh:'购课',en:'Buy'},deduct:{zh:'扣课',en:'Deduct'},
+  addStu:{zh:'新增学员',en:'Add Student'},editStu:{zh:'编辑学员',en:'Edit Student'},fName:{zh:'姓名 *',en:'Name *'},fGrade:{zh:'年级',en:'Grade'},fAddress:{zh:'家庭住址',en:'Address'},fAddressPh:{zh:'如：朝阳区望京',en:'e.g. Chaoyang'},fNeed:{zh:'客户需求',en:'Needs'},fNeedPh:{zh:'如：提高英语阅读',en:'e.g. Reading'},fFeedback:{zh:'沟通备注',en:'Notes'},fFeedbackPh:{zh:'沟通记录',en:'Notes'},cancel:{zh:'取消',en:'Cancel'},save:{zh:'保存',en:'Save'},close:{zh:'关闭',en:'Close'},enterName:{zh:'请输入姓名',en:'Enter name'},confirmDelStu:{zh:'确认删除该学员？',en:'Delete student?'},
+  g_nursery:{zh:'托班',en:'Nursery'},g_kindergarten:{zh:'幼儿园',en:'Kindergarten'},g_primary13:{zh:'小学1-3年级',en:'Primary 1-3'},g_primary36:{zh:'小学3-6年级',en:'Primary 4-6'},g_junior:{zh:'初中',en:'Junior High'},g_senior:{zh:'高中',en:'Senior High'},g_adult:{zh:'成人',en:'Adult'},
+  stuDetail:{zh:'学员详情',en:'Detail'},dRemaining:{zh:'剩余',en:'Remaining'},dPaid:{zh:'累计付费',en:'Paid'},dUsed:{zh:'累计上课',en:'Used'},lessonRecords:{zh:'📝 上课记录',en:'📝 Lessons'},purchaseRecords:{zh:'💰 购课记录',en:'💰 Purchases'},noLessonRec:{zh:'暂无上课记录',en:'No lessons'},noPurRec:{zh:'暂无购课记录',en:'No purchases'},none:{zh:'暂无',en:'None'},
+  bilTitle:{zh:'课时收费',en:'Billing'},addPur:{zh:'+ 购课',en:'+ Buy'},addDed:{zh:'+ 扣课',en:'+ Deduct'},searchStu2:{zh:'搜索学员...',en:'Search...'},noStu2:{zh:'暂无学员',en:'No students'},totalPaid:{zh:'总额',en:'Total'},totalHrs:{zh:'总课时',en:'Hours'},unit:{zh:'单价',en:'Unit'},perHr:{zh:'/课时',en:'/hr'},
+  bNoHrs:{zh:'已无课时',en:'No Hours'},bLow:{zh:'课时不足',en:'Low'},bNormal:{zh:'正常',en:'OK'},bNotPur:{zh:'未购课',en:'None'},
+  payTitle:{zh:'收费记录',en:'Payments'},noPay:{zh:'暂无记录',en:'No records'},
+  purTitle:{zh:'购课录入',en:'New Purchase'},fStudent:{zh:'学员 *',en:'Student *'},fAmount:{zh:'金额(¥) *',en:'Amount(¥) *'},fHrs:{zh:'总课时 *',en:'Hours *'},fNote:{zh:'备注',en:'Note'},enterAmt:{zh:'请输入金额',en:'Enter amount'},enterHrs:{zh:'请输入课时',en:'Enter hours'},addStuFirst:{zh:'请先添加学员',en:'Add student first'},remHrs:{zh:'剩余',en:'Rem'},
+  dedTitle:{zh:'上课扣课',en:'Deduct'},fDedHrs:{zh:'扣除课时 *',en:'Hours *'},fLesDate:{zh:'上课日期',en:'Date'},confirm:{zh:'确认',en:'OK'},notEnough:{zh:'课时不足！剩余',en:'Not enough! Rem'},
+  prevM:{zh:'‹',en:'‹'},nextM:{zh:'›',en:'›'},lgLesson:{zh:'课程',en:'Lesson'},lgTrial:{zh:'试听',en:'Trial'},lgVisit:{zh:'回访',en:'Follow-up'},
+  evLesson:{zh:'课程',en:'Lesson'},evTrial:{zh:'试听',en:'Trial'},evVisit:{zh:'回访',en:'Follow-up'},evAdd:{zh:'新增',en:'Add'},evEdit:{zh:'编辑',en:'Edit'},fType:{zh:'类型',en:'Type'},fBind:{zh:'学员',en:'Student'},noBind:{zh:'不绑定',en:'None'},fDate:{zh:'日期 *',en:'Date *'},fTime:{zh:'时间',en:'Time'},fTitle:{zh:'标题',en:'Title'},fTitlePh:{zh:'如：英语阅读课',en:'e.g. Reading'},selDate:{zh:'请选择日期',en:'Select date'},confirmDelEv:{zh:'删除此事件？',en:'Delete event?'},
+  date:{zh:'日期',en:'Date'},amount:{zh:'金额',en:'Amount'},hours:{zh:'课时',en:'Hours'},note:{zh:'备注',en:'Note'},deleted:{zh:'已删除',en:'Deleted'},lessonUnit:{zh:'课时',en:'hrs'},sessions:{zh:'次',en:'x'},yearSuffix:{zh:'年',en:''},loading:{zh:'加载中...',en:'Loading...'},saveErr:{zh:'保存失败',en:'Save failed'},delErr:{zh:'删除失败',en:'Delete failed'},
+};
+let LANG = localStorage.getItem('lang')||'zh';
+function t(k){const e=I18N[k];return e?(e[LANG]||e.zh||k):k;}
+function setLang(l){LANG=l;localStorage.setItem('lang',l);applyLang();}
+
+function applyLang(){
+  const $=id=>document.getElementById(id);
+  $('loginTitle').textContent=t('loginTitle');$('loginSub').textContent=t('loginSub');$('loginBtn').textContent=t('loginBtn');$('loginHint').textContent=t('loginHint');$('loginUser').placeholder=t('loginUserPh');$('loginPwd').placeholder=t('loginPwdPh');
+  $('langZhLogin').classList.toggle('active',LANG==='zh');$('langEnLogin').classList.toggle('active',LANG==='en');
+  $('langZh').classList.toggle('active',LANG==='zh');$('langEn').classList.toggle('active',LANG==='en');$('logoutBtn').textContent=t('logout');
+  $('sL1').textContent=t('stat_students');$('sL2').textContent=t('stat_lessons');$('sL3').textContent=t('stat_revenue');$('sL4').textContent=t('stat_warning');
+  $('warnTitle').textContent=t('warnTitle');$('viewAllBtn').textContent=t('viewAll');$('todayTitle').textContent=t('todayTitle');
+  $('stuTitle').textContent=t('stuTitle');$('addStuBtn').textContent=t('addStudent');$('stuSearch').placeholder=t('searchStu');
+  $('bilTitle').textContent=t('bilTitle');$('purBtn').textContent=t('addPur');$('dedBtn').textContent=t('addDed');$('bilSearch').placeholder=t('searchStu2');$('payTitle2').textContent=t('payTitle');$('paySearch').placeholder=t('searchStu2');
+  $('addLessonBtn').textContent=t('evLesson').slice(0,1);$('addTrialBtn').textContent=t('evTrial').slice(0,1);$('addVisitBtn').textContent=t('evVisit').slice(0,1);
+  $('lgLesson').textContent=t('lgLesson');$('lgTrial').textContent=t('lgTrial');$('lgVisit').textContent=t('lgVisit');
+  $('tb1').textContent=t('nav_dashboard');$('tb2').textContent=t('nav_students');$('tb3').textContent=t('nav_billing');$('tb4').textContent=t('nav_calendar');
+  const active=document.querySelector('.page.active')?.id?.replace('page-','');
+  const titles={dashboard:t('nav_dashboard'),students:t('nav_students'),billing:t('nav_billing'),calendar:t('nav_calendar')};
+  $('topbarTitle').textContent=titles[active]||'';
+  if(active==='dashboard')renderDashboard();if(active==='students')renderStudents();if(active==='billing'){renderBilling();renderPayments();}if(active==='calendar')renderCalendar();
+}
+
+/* ===== API ===== */
+const API={async get(p){const r=await fetch(p);if(!r.ok)throw new Error();return r.json();},async post(p,b){const r=await fetch(p,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error||'err');}return r.json();},async put(p,b){const r=await fetch(p,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});if(!r.ok)throw new Error();return r.json();},async del(p){const r=await fetch(p,{method:'DELETE'});if(!r.ok)throw new Error();return r.json();}};
+let _students=[],_billing=[],_purchases=[],_events=[],_dashboard=null;
+async function refreshStudents(){_students=await API.get('/api/students');return _students;}
+async function refreshBilling(){_billing=await API.get('/api/billing');return _billing;}
+async function refreshPurchases(){_purchases=await API.get('/api/purchases');return _purchases;}
+async function refreshEvents(){_events=await API.get('/api/events');return _events;}
+async function refreshDashboard(){_dashboard=await API.get('/api/dashboard');return _dashboard;}
+
+/* ===== Auth ===== */
+async function doLogin(){const u=document.getElementById('loginUser').value,p=document.getElementById('loginPwd').value;try{await API.post('/api/login',{username:u,password:p});localStorage.setItem('loggedIn','true');showApp();}catch{alert(t('loginError'));}}
+function doLogout(){localStorage.setItem('loggedIn','false');document.getElementById('app').style.display='none';document.getElementById('loginPage').style.display='flex';}
+async function showApp(){document.getElementById('loginPage').style.display='none';document.getElementById('app').style.display='flex';applyLang();await renderAll();}
+
+/* ===== Tab Switch ===== */
+function switchTab(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
+  document.querySelector('.tab-item[data-page="'+page+'"]').classList.add('active');
+  const titles={dashboard:t('nav_dashboard'),students:t('nav_students'),billing:t('nav_billing'),calendar:t('nav_calendar')};
+  document.getElementById('topbarTitle').textContent=titles[page]||'';
+  if(page==='dashboard')renderDashboard();if(page==='students')renderStudents();if(page==='billing'){renderBilling();renderPayments();}if(page==='calendar')renderCalendar();
+}
+
+/* ===== Helpers ===== */
+function gradeOpts(sel){const ks=['g_nursery','g_kindergarten','g_primary13','g_primary36','g_junior','g_senior','g_adult'];return ks.map(k=>'<option '+(sel===t(k)?'selected':'')+'>'+t(k)+'</option>').join('');}
+function badge(rem,has){if(rem<=0&&has)return'<span class="badge badge-danger">'+t('bNoHrs')+'</span>';if(rem<=3&&rem>0)return'<span class="badge badge-warning">'+t('bLow')+'</span>';if(!has)return'<span class="badge badge-info">'+t('bNotPur')+'</span>';return'<span class="badge badge-success">'+t('bNormal')+'</span>';}
+function closeSheet(){document.getElementById('sheetContainer').innerHTML='';}
+
+/* ===== Dashboard ===== */
+async function renderDashboard(){
+  const d=_dashboard||await refreshDashboard();
+  document.getElementById('statStudents').textContent=d.student_count;
+  document.getElementById('statLessons').textContent=d.month_events;
+  document.getElementById('statRevenue').textContent='¥'+d.total_revenue;
+  document.getElementById('statWarning').textContent=d.warning_count;
+  const wl=document.getElementById('warningList');
+  if(d.warnings.length===0){wl.innerHTML='<div class="empty">'+t('noWarn')+'</div>';}
+  else{wl.innerHTML=d.warnings.map(s=>'<div class="list-item" style="margin:0 0 8px;"><div class="li-row"><div class="li-main"><div class="li-title">'+s.name+'</div><div class="li-sub">'+(s.grade||'-')+'</div></div><div class="li-right"><div style="color:var(--danger);font-weight:700;font-size:18px;">'+s.remaining_hours+'</div><div style="font-size:11px;color:var(--text-sub)">'+t('remaining')+'</div></div></div></div>').join('');}
+  const tl=document.getElementById('todayLessons');
+  if(d.today_events.length===0){tl.innerHTML='<div class="empty">'+t('noToday')+'</div>';}
+  else{tl.innerHTML=d.today_events.map(e=>{const cls=e.type==='lesson'?'badge-info':e.type==='trial'?'badge-warning':'badge-success';return '<div class="list-item" style="margin:0 0 8px;"><div class="li-row"><div class="li-main"><div class="li-title">'+(e.student_name||'-')+'</div><div class="li-sub">'+(e.time||'')+' '+(e.title||'')+'</div></div><div><span class="badge '+cls+'">'+t('ev_'+e.type)+'</span></div></div></div>';}).join('');}
+}
+
+/* ===== Students ===== */
+function openStudentModal(id){
+  const s=id?_students.find(x=>String(x.id)===String(id)):null;
+  const html='<div class="overlay" onclick="if(event.target===this)closeSheet()"><div class="sheet"><h3>'+(id?t('editStu'):t('addStu'))+'</h3>'+
+    '<div class="form-group"><label>'+t('fName')+'</label><input type="text" id="sName" value="'+(s?.name||'')+'"></div>'+
+    '<div class="form-group"><label>'+t('fGrade')+'</label><select id="sGrade">'+gradeOpts(s?.grade)+'</select></div>'+
+    '<div class="form-group"><label>'+t('fAddress')+'</label><input type="text" id="sAddress" value="'+(s?.address||'')+'" placeholder="'+t('fAddressPh')+'"></div>'+
+    '<div class="form-group"><label>'+t('fNeed')+'</label><textarea id="sNeed" placeholder="'+t('fNeedPh')+'">'+(s?.need||'')+'</textarea></div>'+
+    '<div class="form-group"><label>'+t('fFeedback')+'</label><textarea id="sFeedback" placeholder="'+t('fFeedbackPh')+'">'+(s?.feedback||'')+'</textarea></div>'+
+    '<div class="sheet-actions"><button class="btn btn-outline" onclick="closeSheet()">'+t('cancel')+'</button><button class="btn btn-primary" onclick="saveStudent(\''+(id||'')+'\')">'+t('save')+'</button></div></div></div>';
+  document.getElementById('sheetContainer').innerHTML=html;
+}
+async function saveStudent(id){
+  const name=document.getElementById('sName').value.trim();if(!name){alert(t('enterName'));return;}
+  const data={name,grade:document.getElementById('sGrade').value,address:document.getElementById('sAddress').value.trim(),need:document.getElementById('sNeed').value.trim(),feedback:document.getElementById('sFeedback').value.trim()};
+  try{if(id)await API.put('/api/students/'+id,data);else await API.post('/api/students',data);closeSheet();await refreshStudents();renderStudents();renderDashboard();}catch(e){alert(t('saveErr'));}}
+async function deleteStudent(id){if(!confirm(t('confirmDelStu')))return;try{await API.del('/api/students/'+id);await refreshStudents();renderStudents();renderDashboard();}catch{alert(t('delErr'));}}
+
+function renderStudents(){
+  const q=(document.getElementById('stuSearch')?.value||'').toLowerCase();
+  let list=_students;if(q)list=list.filter(s=>s.name.toLowerCase().includes(q)||(s.address||'').toLowerCase().includes(q));
+  const el=document.getElementById('stuList');
+  if(list.length===0){el.innerHTML='<div class="empty">'+t('noStu')+'</div>';return;}
+  el.innerHTML=list.map(s=>{
+    const r=s.remaining_hours,warn=r<=3&&r>0,empty=r<=0;
+    return '<div class="list-item"><div class="li-row"><div class="li-main"><div class="li-title">'+s.name+'</div><div class="li-sub">'+(s.grade||'-')+' · '+(s.address||'-')+'</div></div><div class="li-right"><div style="font-weight:700;font-size:16px;color:'+(warn||empty?'var(--danger)':'var(--text-main)')+'">'+r+'</div><div style="font-size:11px;color:var(--text-sub)">'+t('remaining')+'</div></div></div>'+
+      '<div class="li-actions"><button class="btn btn-outline btn-sm" onclick="viewStudentDetail('+s.id+')">'+t('detail')+'</button><button class="btn btn-outline btn-sm" onclick="openStudentModal('+s.id+')">'+t('edit')+'</button><button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="deleteStudent('+s.id+')">'+t('delete')+'</button></div></div>';
+  }).join('');
+}
+
+async function viewStudentDetail(id){
+  try{
+    const s=await API.get('/api/students/'+id);
+    const r=s.remaining_hours,deductions=s.deductions||[],purchases=s.purchases||[];
+    const html='<div class="overlay" onclick="if(event.target===this)closeSheet()"><div class="sheet" style="max-height:90vh;"><h3>'+t('stuDetail')+'</h3>'+
+      '<div class="detail-info">'+
+      '<div class="full"><div class="detail-label">'+t('name')+'</div><div class="detail-box">'+s.name+'</div></div>'+
+      '<div><div class="detail-label">'+t('grade')+'</div><div class="detail-box">'+(s.grade||'-')+'</div></div>'+
+      '<div><div class="detail-label">'+t('remaining')+'</div><div class="detail-box" style="color:'+(r<=3?'var(--danger)':'var(--success)')+';font-weight:700;">'+r+' '+t('lessonUnit')+'</div></div>'+
+      '<div><div class="detail-label">'+t('dPaid')+'</div><div class="detail-box">¥'+s.total_paid+'</div></div>'+
+      '<div><div class="detail-label">'+t('dUsed')+'</div><div class="detail-box">'+s.used_hours+' '+t('lessonUnit')+' / '+deductions.length+' '+t('sessions')+'</div></div>'+
+      '<div class="full"><div class="detail-label">'+t('address')+'</div><div class="detail-box">'+(s.address||'-')+'</div></div>'+
+      '<div class="full"><div class="detail-label">'+t('fNeed')+'</div><div class="detail-box">'+(s.need||t('none'))+'</div></div>'+
+      '<div class="full"><div class="detail-label">'+t('fFeedback')+'</div><div class="detail-box" style="white-space:pre-wrap;">'+(s.feedback||t('none'))+'</div></div></div>'+
+      '<div class="sub-list"><div class="sub-list-title">'+t('lessonRecords')+'</div>'+
+      (deductions.length===0?'<div class="empty" style="padding:16px;">'+t('noLessonRec')+'</div>':deductions.map(d=>'<div class="sub-list-item"><span>'+d.date+'</span><span style="font-weight:600;">'+d.hours+' '+t('lessonUnit')+'</span></div>').join(''))+
+      '</div><div class="sub-list"><div class="sub-list-title">'+t('purchaseRecords')+'</div>'+
+      (purchases.length===0?'<div class="empty" style="padding:16px;">'+t('noPurRec')+'</div>':purchases.map(p=>'<div class="sub-list-item"><span>'+String(p.date).slice(0,10)+'</span><span style="color:var(--success);font-weight:600;">¥'+p.amount+' ('+p.total_hours+t('lessonUnit')+')</span></div>').join(''))+
+      '</div><div class="sheet-actions"><button class="btn btn-outline" onclick="closeSheet()">'+t('close')+'</button><button class="btn btn-primary" onclick="closeSheet();openStudentModal('+s.id+')">'+t('edit')+'</button></div></div></div>';
+    document.getElementById('sheetContainer').innerHTML=html;
+  }catch(e){alert('Error');}
+}
+
+/* ===== Billing ===== */
+async function openPurchaseModal(){
+  if(_students.length===0){alert(t('addStuFirst'));return;}
+  const html='<div class="overlay" onclick="if(event.target===this)closeSheet()"><div class="sheet"><h3>'+t('purTitle')+'</h3>'+
+    '<div class="form-group"><label>'+t('fStudent')+'</label><select id="pStudent">'+_students.map(s=>'<option value="'+s.id+'">'+s.name+' ('+t('remHrs')+' '+s.remaining_hours+')</option>').join('')+'</select></div>'+
+    '<div class="form-row"><div class="form-group"><label>'+t('fAmount')+'</label><input type="number" id="pAmount"></div><div class="form-group"><label>'+t('fHrs')+'</label><input type="number" id="pHours"></div></div>'+
+    '<div class="form-group"><label>'+t('fNote')+'</label><input type="text" id="pNote"></div>'+
+    '<div class="sheet-actions"><button class="btn btn-outline" onclick="closeSheet()">'+t('cancel')+'</button><button class="btn btn-success" onclick="savePurchase()">'+t('save')+'</button></div></div></div>';
+  document.getElementById('sheetContainer').innerHTML=html;
+}
+async function savePurchase(){
+  const sid=parseInt(document.getElementById('pStudent').value),amt=parseFloat(document.getElementById('pAmount').value),hrs=parseFloat(document.getElementById('pHours').value),note=document.getElementById('pNote').value.trim();
+  if(!amt||amt<=0){alert(t('enterAmt'));return;}if(!hrs||hrs<=0){alert(t('enterHrs'));return;}
+  try{await API.post('/api/purchases',{student_id:sid,amount:amt,total_hours:hrs,note});closeSheet();await refreshStudents();await refreshBilling();await refreshPurchases();renderBilling();renderPayments();renderDashboard();}catch(e){alert(e.message);}}
+
+async function openDeductModal(){
+  if(_students.length===0){alert(t('addStuFirst'));return;}
+  const html='<div class="overlay" onclick="if(event.target===this)closeSheet()"><div class="sheet"><h3>'+t('dedTitle')+'</h3>'+
+    '<div class="form-group"><label>'+t('fStudent')+'</label><select id="dStudent">'+_students.map(s=>'<option value="'+s.id+'">'+s.name+' ('+t('remHrs')+' '+s.remaining_hours+')</option>').join('')+'</select></div>'+
+    '<div class="form-row"><div class="form-group"><label>'+t('fDedHrs')+'</label><input type="number" id="dHours" value="1" step="0.5"></div><div class="form-group"><label>'+t('fLesDate')+'</label><input type="date" id="dDate" value="'+new Date().toISOString().slice(0,10)+'"></div></div>'+
+    '<div class="form-group"><label>'+t('fNote')+'</label><input type="text" id="dNote"></div>'+
+    '<div class="sheet-actions"><button class="btn btn-outline" onclick="closeSheet()">'+t('cancel')+'</button><button class="btn btn-primary" onclick="saveDeduction()">'+t('confirm')+'</button></div></div></div>';
+  document.getElementById('sheetContainer').innerHTML=html;
+}
+async function saveDeduction(){
+  const sid=parseInt(document.getElementById('dStudent').value),hrs=parseFloat(document.getElementById('dHours').value),date=document.getElementById('dDate').value,note=document.getElementById('dNote').value.trim();
+  if(!hrs||hrs<=0){alert(t('enterHrs'));return;}
+  try{await API.post('/api/deductions',{student_id:sid,hours,date,note});closeSheet();await refreshStudents();await refreshBilling();renderBilling();renderDashboard();}catch(e){alert(e.message);}}
+
+function renderBilling(){
+  const q=(document.getElementById('bilSearch')?.value||'').toLowerCase();
+  let list=_billing;if(q)list=list.filter(s=>s.name.toLowerCase().includes(q));
+  const el=document.getElementById('bilList');
+  if(list.length===0){el.innerHTML='<div class="empty">'+t('noStu2')+'</div>';return;}
+  el.innerHTML=list.map(s=>{
+    const r=s.remaining_hours,warn=r<=3&&r>0,empty=r<=0;
+    return '<div class="list-item"><div class="li-row"><div class="li-main"><div class="li-title">'+s.name+'</div><div class="li-sub">'+(s.grade||'-')+' · ¥'+s.total_amount+' · '+s.total_hours+t('lessonUnit')+'</div></div><div class="li-right"><div style="font-weight:700;font-size:16px;color:'+(warn||empty?'var(--danger)':'var(--text-main)')+'">'+r+'</div><div style="font-size:11px;color:var(--text-sub)">'+t('remaining')+'</div></div></div>'+
+      '<div class="li-sub" style="margin-top:6px;">'+t('used')+': '+s.used_hours+' · '+t('unit')+': ¥'+s.unit_price+t('perHr')+' · '+badge(r,s.has_purchased)+'</div>'+
+      '<div class="li-actions"><button class="btn btn-success btn-sm" onclick="openPurFor('+s.id+')">'+t('buy')+'</button><button class="btn btn-primary btn-sm" onclick="openDedFor('+s.id+')">'+t('deduct')+'</button><button class="btn btn-outline btn-sm" onclick="viewStudentDetail('+s.id+')">'+t('detail')+'</button></div></div>';
+  }).join('');
+}
+function openPurFor(sid){openPurchaseModal();setTimeout(()=>{document.getElementById('pStudent').value=sid;},0);}
+function openDedFor(sid){openDeductModal();setTimeout(()=>{document.getElementById('dStudent').value=sid;},0);}
+
+function renderPayments(){
+  const q=(document.getElementById('paySearch')?.value||'').toLowerCase();
+  let list=[..._purchases].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  if(q)list=list.filter(p=>(p.student_name||'').toLowerCase().includes(q));
+  const el=document.getElementById('payList');
+  if(list.length===0){el.innerHTML='<div class="empty">'+t('noPay')+'</div>';return;}
+  el.innerHTML=list.map(p=>{
+    const unit=p.total_hours>0?Math.round(p.amount/p.total_hours):0;
+    return '<div class="list-item"><div class="li-row"><div class="li-main"><div class="li-title">'+(p.student_name||t('deleted'))+'</div><div class="li-sub">'+String(p.date).slice(0,10)+' · '+p.total_hours+t('lessonUnit')+' · ¥'+unit+t('perHr')+'</div></div><div class="li-right" style="color:var(--success);font-weight:700;font-size:16px;">¥'+p.amount+'</div></div>'+(p.note?'<div class="li-sub" style="margin-top:4px;">'+p.note+'</div>':'')+'</div>';
+  }).join('');
+}
+
+/* ===== Calendar ===== */
+let calDate=new Date();
+function renderCalendar(){
+  const y=calDate.getFullYear(),m=calCursorGetMonth();
+  const mn=LANG==='zh'?['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('calMonthLabel').textContent=y+t('yearSuffix')+' '+mn[m];
+  const firstDay=new Date(y,m,1).getDay(),daysInMonth=new Date(y,m+1,0).getDate(),daysInPrev=new Date(y,m,0).getDate();
+  const wd=LANG==='zh'?['日','一','二','三','四','五','六']:['S','M','T','W','T','F','S'];
+  let html='';wd.forEach(d=>html+='<div class="cal-wd">'+d+'</div>');
+  const todayStr=new Date().toISOString().slice(0,10);
+  for(let i=firstDay-1;i>=0;i--)html+='<div class="cal-day other"><div class="cal-day-num">'+(daysInPrev-i)+'</div></div>';
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const evs=_events.filter(e=>e.date===ds);
+    let evHtml=evs.slice(0,2).map(e=>{const cls=e.type==='lesson'?'lesson':e.type==='trial'?'trial':'visit';const sn=e.student_name||e.title||'';return '<div class="cal-ev '+cls+'">'+(e.time||'')+' '+sn+'</div>';}).join('');
+    html+='<div class="cal-day '+(ds===todayStr?'today':'')+'" onclick="openEventModal(\'\',\'lesson\',\''+ds+'\')"><div class="cal-day-num">'+d+'</div>'+evHtml+'</div>';
+  }
+  const rem=(7-((firstDay+daysInMonth)%7))%7;
+  for(let i=1;i<=rem;i++)html+='<div class="cal-day other"><div class="cal-day-num">'+i+'</div></div>';
+  document.getElementById('calGrid').innerHTML=html;
+}
+function calCursorGetMonth(){return calDate.getMonth();}
+function changeMonth(d){calDate.setMonth(calDate.getMonth()+d);renderCalendar();}
+
+function openEventModal(id,type,presetDate){
+  const ev=id?_events.find(e=>e.id===id):null;
+  const dd=presetDate||ev?.date||new Date().toISOString().slice(0,10);
+  const dt=type||ev?.type||'lesson';
+  const tk='ev_'+dt;
+  const html='<div class="overlay" onclick="if(event.target===this)closeSheet()"><div class="sheet"><h3>'+(id?t('evEdit'):t('evAdd'))+t(tk)+'</h3>'+
+    '<div class="form-group"><label>'+t('fType')+'</label><select id="eType"><option value="lesson" '+(dt==='lesson'?'selected':'')+'>'+t('evLesson')+'</option><option value="trial" '+(dt==='trial'?'selected':'')+'>'+t('evTrial')+'</option><option value="visit" '+(dt==='visit'?'selected':'')+'>'+t('evVisit')+'</option></select></div>'+
+    '<div class="form-group"><label>'+t('fBind')+'</label><select id="eStudent"><option value="">'+t('noBind')+'</option>'+_students.map(s=>'<option value="'+s.id+'" '+(ev&&ev.student_id===s.id?'selected':'')+'>'+s.name+'</option>').join('')+'</select></div>'+
+    '<div class="form-row"><div class="form-group"><label>'+t('fDate')+'</label><input type="date" id="eDate" value="'+dd+'"></div><div class="form-group"><label>'+t('fTime')+'</label><input type="time" id="eTime" value="'+(ev?.time||'')+'"></div></div>'+
+    '<div class="form-group"><label>'+t('fTitle')+'</label><input type="text" id="eTitle" value="'+(ev?.title||'')+'" placeholder="'+t('fTitlePh')+'"></div>'+
+    '<div class="sheet-actions">'+(id?'<button class="btn btn-danger" onclick="deleteEvent('+id+')" style="flex:0 0 auto;">'+t('delete')+'</button>':'')+'<button class="btn btn-outline" onclick="closeSheet()">'+t('cancel')+'</button><button class="btn btn-primary" onclick="saveEvent('+(id||'\'\'')+')">'+t('save')+'</button></div></div></div>';
+  document.getElementById('sheetContainer').innerHTML=html;
+}
+async function saveEvent(id){
+  const type=document.getElementById('eType').value,sid=document.getElementById('eStudent').value?parseInt(document.getElementById('eStudent').value):null;
+  const date=document.getElementById('eDate').value,time=document.getElementById('eTime').value,title=document.getElementById('eTitle').value.trim();
+  if(!date){alert(t('selDate'));return;}
+  try{if(id)await API.put('/api/events/'+id,{type,student_id:sid,date,time,title});else await API.post('/api/events',{type,student_id:sid,date,time,title});closeSheet();await refreshEvents();renderCalendar();renderDashboard();}catch(e){alert(e.message);}}
+async function deleteEvent(id){if(!confirm(t('confirmDelEv')))return;try{await API.del('/api/events/'+id);closeSheet();await refreshEvents();renderCalendar();renderDashboard();}catch{alert(t('delErr'));}}
+
+/* ===== Render All ===== */
+async function renderAll(){
+  try{await refreshStudents();await refreshBilling();await refreshPurchases();await refreshEvents();await refreshDashboard();
+  renderDashboard();renderStudents();renderBilling();renderPayments();renderCalendar();}catch(e){console.error(e);}
+}
+
+/* ===== Init ===== */
+document.getElementById('loginPwd')?.addEventListener('keypress',e=>{if(e.key==='Enter')doLogin();});
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+function applyLoginLang(){const $=id=>document.getElementById(id);$('langZhLogin').classList.toggle('active',LANG==='zh');$('langEnLogin').classList.toggle('active',LANG==='en');$('loginTitle').textContent=t('loginTitle');$('loginSub').textContent=t('loginSub');$('loginBtn').textContent=t('loginBtn');$('loginHint').textContent=t('loginHint');$('loginUser').placeholder=t('loginUserPh');$('loginPwd').placeholder=t('loginPwdPh');}
+applyLoginLang();
+if(localStorage.getItem('loggedIn')==='true')showApp();
+</script>
+</body>
+</html>
