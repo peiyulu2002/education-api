@@ -1,16 +1,16 @@
 {
-  "name": "pretty-english-server",
+  "name": "pretty-english-backend",
   "version": "1.0.0",
-  "description": "Pretty English - Tutoring Center Management Backend",
+  "private": true,
+  "description": "Pretty English backend - CloudBase PostgreSQL via PostgREST HTTP API",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.21.0",
-    "pg": "^8.13.0",
     "cors": "^2.8.5",
-    "bcryptjs": "^2.4.3"
+    "bcryptjs": "^2.4.3",
+    "node-fetch": "^2.7.0"
   }
 }
