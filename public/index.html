@@ -24,23 +24,8 @@
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
   body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background:var(--bg-page); color:var(--text-main); font-size:15px; line-height:1.5; }
 
-  /* ===== Login ===== */
-  #loginPage { position:fixed; inset:0; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); display:flex; align-items:center; justify-content:center; z-index:9999; }
-  .login-box { background:#fff; border-radius:20px; padding:36px 28px; width:90%; max-width:360px; box-shadow:0 20px 60px rgba(0,0,0,0.3); text-align:center; }
-  .login-box .logo { font-size:48px; margin-bottom:12px; }
-  .login-box h2 { font-size:20px; margin-bottom:6px; }
-  .login-box .sub { color:var(--text-sub); margin-bottom:24px; font-size:13px; }
-  .login-box input { width:100%; padding:14px 16px; border:1px solid var(--border); border-radius:10px; font-size:15px; margin-bottom:12px; outline:none; }
-  .login-box input:focus { border-color:var(--primary); }
-  .login-box .btn-login { width:100%; padding:14px; background:var(--primary); color:#fff; border:none; border-radius:10px; font-size:16px; cursor:pointer; }
-  .login-box .btn-login:active { background:var(--primary-dark); }
-  .login-hint { margin-top:14px; font-size:12px; color:var(--text-light); }
-  .lang-switch-login { margin-top:18px; display:flex; justify-content:center; gap:4px; }
-  .lang-switch-login button { background:transparent; border:1px solid var(--border); border-radius:6px; padding:4px 14px; font-size:12px; color:var(--text-sub); cursor:pointer; }
-  .lang-switch-login button.active { background:var(--primary); color:#fff; border-color:var(--primary); }
-
   /* ===== App Layout ===== */
-  #app { display:none; flex-direction:column; min-height:100vh; }
+  #app { display:flex; flex-direction:column; min-height:100vh; }
 
   /* Top bar */
   .topbar { height:52px; background:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 16px; position:sticky; top:0; z-index:50; border-bottom:1px solid var(--border); }
@@ -49,7 +34,6 @@
   .lang-switch { display:flex; gap:2px; }
   .lang-switch button { background:transparent; border:1px solid var(--border); border-radius:4px; padding:2px 8px; font-size:11px; color:var(--text-sub); cursor:pointer; }
   .lang-switch button.active { background:var(--primary); color:#fff; border-color:var(--primary); }
-  .logout-btn { color:var(--danger); font-size:13px; cursor:pointer; background:none; border:none; }
 
   /* Pages */
   .page-area { flex:1; padding-bottom:70px; overflow-y:auto; }
@@ -160,31 +144,15 @@
 </head>
 <body>
 
-<!-- ===== Login ===== -->
-<div id="loginPage">
-  <div class="login-box">
-    <div class="logo">📚</div>
-    <h2 id="loginTitle">Pretty English</h2>
-    <div class="sub" id="loginSub">管理后台 · 请登录</div>
-    <input type="text" id="loginUser" placeholder="用户名 / Username" value="admin">
-    <input type="password" id="loginPwd" placeholder="密码 / Password" value="admin123">
-    <button class="btn-login" id="loginBtn" onclick="doLogin()">登 录</button>
-    <div class="login-hint" id="loginHint">默认账号: admin / admin123</div>
-    <div class="lang-switch-login">
-      <button id="langZhLogin" class="active" onclick="setLang('zh')">中文</button>
-      <button id="langEnLogin" onclick="setLang('en')">EN</button>
-    </div>
-  </div>
-</div>
+<!-- Login removed: app opens directly into the main interface -->
 
 <!-- ===== App ===== -->
 <div id="app">
   <div class="topbar">
     <div class="topbar-title" id="topbarTitle">工作台</div>
-    <div class="topbar-right">
-      <div class="lang-switch"><button id="langZh" class="active" onclick="setLang('zh')">中</button><button id="langEn" onclick="setLang('en')">EN</button></div>
-      <button class="logout-btn" id="logoutBtn" onclick="doLogout()">退出</button>
-    </div>
+      <div class="topbar-right">
+        <div class="lang-switch"><button id="langZh" class="active" onclick="setLang('zh')">中</button><button id="langEn" onclick="setLang('en')">EN</button></div>
+      </div>
   </div>
 
   <div class="page-area">
@@ -270,7 +238,6 @@
 /* ===== i18n ===== */
 const I18N = {
   appTitle:{zh:'Pretty English',en:'Pretty English'},
-  loginTitle:{zh:'Pretty English',en:'Pretty English'},loginSub:{zh:'管理后台 · 请登录',en:'Admin · Sign In'},loginBtn:{zh:'登录',en:'Sign In'},loginHint:{zh:'默认账号: admin / admin123',en:'Default: admin / admin123'},loginUserPh:{zh:'用户名',en:'Username'},loginPwdPh:{zh:'密码',en:'Password'},loginError:{zh:'用户名或密码错误',en:'Invalid credentials'},
   logout:{zh:'退出',en:'Logout'},
   nav_dashboard:{zh:'工作台',en:'Dashboard'},nav_students:{zh:'学员',en:'Students'},nav_billing:{zh:'收费',en:'Billing'},nav_calendar:{zh:'日历',en:'Calendar'},
   stat_students:{zh:'学员总数',en:'Students'},stat_lessons:{zh:'本月排课',en:'This Month'},stat_revenue:{zh:'累计收费',en:'Revenue'},stat_warning:{zh:'课时预警',en:'Low Hours'},
@@ -296,9 +263,7 @@ function setLang(l){LANG=l;localStorage.setItem('lang',l);applyLang();}
 
 function applyLang(){
   const $=id=>document.getElementById(id);
-  $('loginTitle').textContent=t('loginTitle');$('loginSub').textContent=t('loginSub');$('loginBtn').textContent=t('loginBtn');$('loginHint').textContent=t('loginHint');$('loginUser').placeholder=t('loginUserPh');$('loginPwd').placeholder=t('loginPwdPh');
-  $('langZhLogin').classList.toggle('active',LANG==='zh');$('langEnLogin').classList.toggle('active',LANG==='en');
-  $('langZh').classList.toggle('active',LANG==='zh');$('langEn').classList.toggle('active',LANG==='en');$('logoutBtn').textContent=t('logout');
+  $('langZh').classList.toggle('active',LANG==='zh');$('langEn').classList.toggle('active',LANG==='en');
   $('sL1').textContent=t('stat_students');$('sL2').textContent=t('stat_lessons');$('sL3').textContent=t('stat_revenue');$('sL4').textContent=t('stat_warning');
   $('warnTitle').textContent=t('warnTitle');$('viewAllBtn').textContent=t('viewAll');$('todayTitle').textContent=t('todayTitle');
   $('stuTitle').textContent=t('stuTitle');$('addStuBtn').textContent=t('addStudent');$('stuSearch').placeholder=t('searchStu');
@@ -313,7 +278,9 @@ function applyLang(){
 }
 
 /* ===== API ===== */
-const API={async get(p){const r=await fetch(p);if(!r.ok)throw new Error();return r.json();},async post(p,b){const r=await fetch(p,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error||'err');}return r.json();},async put(p,b){const r=await fetch(p,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});if(!r.ok)throw new Error();return r.json();},async del(p){const r=await fetch(p,{method:'DELETE'});if(!r.ok)throw new Error();return r.json();}};
+// Deployed CloudBase backend base URL. Change this in one place to repoint the app.
+const API_BASE='https://education-api-306045-11-1478620475.sh.run.tcloudbase.com';
+const API={async get(p){const r=await fetch(API_BASE+p);if(!r.ok)throw new Error();return r.json();},async post(p,b){const r=await fetch(API_BASE+p,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error||'err');}return r.json();},async put(p,b){const r=await fetch(API_BASE+p,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});if(!r.ok)throw new Error();return r.json();},async del(p){const r=await fetch(API_BASE+p,{method:'DELETE'});if(!r.ok)throw new Error();return r.json();}};
 let _students=[],_billing=[],_purchases=[],_events=[],_dashboard=null;
 async function refreshStudents(){_students=await API.get('/api/students');return _students;}
 async function refreshBilling(){_billing=await API.get('/api/billing');return _billing;}
@@ -321,10 +288,8 @@ async function refreshPurchases(){_purchases=await API.get('/api/purchases');ret
 async function refreshEvents(){_events=await API.get('/api/events');return _events;}
 async function refreshDashboard(){_dashboard=await API.get('/api/dashboard');return _dashboard;}
 
-/* ===== Auth ===== */
-async function doLogin(){const u=document.getElementById('loginUser').value,p=document.getElementById('loginPwd').value;try{await API.post('/api/login',{username:u,password:p});localStorage.setItem('loggedIn','true');showApp();}catch{alert(t('loginError'));}}
-function doLogout(){localStorage.setItem('loggedIn','false');document.getElementById('app').style.display='none';document.getElementById('loginPage').style.display='flex';}
-async function showApp(){document.getElementById('loginPage').style.display='none';document.getElementById('app').style.display='flex';applyLang();await renderAll();}
+/* ===== Auth (login disabled: app opens directly; backend /api/login retained for future use) ===== */
+async function showApp(){document.getElementById('app').style.display='flex';applyLang();await renderAll();}
 
 /* ===== Tab Switch ===== */
 function switchTab(page){
@@ -517,11 +482,8 @@ async function renderAll(){
 }
 
 /* ===== Init ===== */
-document.getElementById('loginPwd')?.addEventListener('keypress',e=>{if(e.key==='Enter')doLogin();});
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
-function applyLoginLang(){const $=id=>document.getElementById(id);$('langZhLogin').classList.toggle('active',LANG==='zh');$('langEnLogin').classList.toggle('active',LANG==='en');$('loginTitle').textContent=t('loginTitle');$('loginSub').textContent=t('loginSub');$('loginBtn').textContent=t('loginBtn');$('loginHint').textContent=t('loginHint');$('loginUser').placeholder=t('loginUserPh');$('loginPwd').placeholder=t('loginPwdPh');}
-applyLoginLang();
-if(localStorage.getItem('loggedIn')==='true')showApp();
+showApp();
 </script>
 </body>
 </html>
