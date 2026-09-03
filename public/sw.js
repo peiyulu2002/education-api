@@ -1,11 +1,12 @@
 // Pretty English - Service Worker
-const CACHE_NAME = 'pretty-english-v4';
+const CACHE_NAME = 'pretty-english-v5';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icon-192.png',
-  './icon-512.png'
+  './icon-512.png',
+  './apple-touch-icon.png'
 ];
 
 // Install: cache core assets
