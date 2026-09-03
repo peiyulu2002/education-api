@@ -252,6 +252,15 @@
         <span data-page-node-id="j2XiW2AuOLMA7Ut1MTYr7v"><span class="dot" style="background:#E8F8F0" data-page-node-id="M4BgbvuO6c25Zt74pOgwcr"></span><span id="lgVisit" data-page-node-id="zsE6bVXHBqGetexEIjV5EC">回访</span></span>
       </div>
     </div>
+
+    <!-- Teacher (Admin only) -->
+    <div class="page" id="page-teacher">
+      <div style="padding:12px 16px 8px; font-size:17px; font-weight:700;" id="teaTitle">老师账号</div>
+      <div class="card">
+        <div class="card-header"><div class="card-title" id="teaCardTitle">老师管理</div><button class="btn btn-primary btn-sm" id="addTeaBtn" onclick="openTeacherModal()">+ 添加</button></div>
+        <div id="teaList"></div>
+      </div>
+    </div>
   </div>
 
   <!-- Tab Bar -->
@@ -260,6 +269,7 @@
     <div class="tab-item" data-page="students" onclick="switchTab('students')" data-page-node-id="MxtQCelF6XfYIFOB8SNMAa"><span class="tab-icon" data-page-node-id="tSxHgQESfR9iL0AvQXd1HX">👤</span><span class="tab-label" id="tb2" data-page-node-id="GcA2A8kokyJXFtnGc23qXH">学员</span></div>
     <div class="tab-item" id="tabBilling" data-page="billing" onclick="switchTab('billing')" data-page-node-id="EvuNCrTTh1Grt40oHfaAzd"><span class="tab-icon" data-page-node-id="cRNWVfEQMSuFFIGvexu46M">💰</span><span class="tab-label" id="tb3" data-page-node-id="uWJfmJ2q08I7PVtX0rYhMH">收费</span></div>
     <div class="tab-item" data-page="calendar" onclick="switchTab('calendar')" data-page-node-id="mcylWQh6NjouqJQAtEpGZv"><span class="tab-icon" data-page-node-id="YpAS7CskNbrGlMDV6XJX7J">📅</span><span class="tab-label" id="tb4" data-page-node-id="UxND6hPRMK6ZrQjv2u75bE">日历</span></div>
+    <div class="tab-item" id="tabTeacher" data-page="teacher" onclick="switchTab('teacher')"><span class="tab-icon">🎓</span><span class="tab-label" id="tb5">老师</span></div>
   </div>
 </div>
 
@@ -288,6 +298,7 @@ const I18N = {
   prevM:{zh:'‹',en:'‹'},nextM:{zh:'›',en:'›'},lgLesson:{zh:'课程',en:'Lesson'},lgTrial:{zh:'试听',en:'Trial'},lgVisit:{zh:'回访',en:'Follow-up'},
   evLesson:{zh:'课程',en:'Lesson'},evTrial:{zh:'试听',en:'Trial'},evVisit:{zh:'回访',en:'Follow-up'},evAdd:{zh:'新增',en:'Add'},evEdit:{zh:'编辑',en:'Edit'},fType:{zh:'类型',en:'Type'},fBind:{zh:'学员',en:'Student'},noBind:{zh:'不绑定',en:'None'},fDate:{zh:'日期 *',en:'Date *'},fTime:{zh:'时间',en:'Time'},fTitle:{zh:'标题',en:'Title'},fTitlePh:{zh:'如：英语阅读课',en:'e.g. Reading'},selDate:{zh:'请选择日期',en:'Select date'},confirmDelEv:{zh:'删除此事件？',en:'Delete event?'},
   date:{zh:'日期',en:'Date'},amount:{zh:'金额',en:'Amount'},hours:{zh:'课时',en:'Hours'},note:{zh:'备注',en:'Note'},deleted:{zh:'已删除',en:'Deleted'},lessonUnit:{zh:'课时',en:'hrs'},sessions:{zh:'次',en:'x'},yearSuffix:{zh:'年',en:''},loading:{zh:'加载中...',en:'Loading...'},saveErr:{zh:'保存失败',en:'Save failed'},delErr:{zh:'删除失败',en:'Delete failed'},
+  nav_teacher:{zh:'老师',en:'Teacher'},teaTitle:{zh:'老师账号',en:'Teacher Account'},teaCardTitle:{zh:'老师管理',en:'Teacher Management'},addTeacher:{zh:'添加老师',en:'Add Teacher'},fTeaName:{zh:'老师姓名 *',en:'Name *'},fTeaNamePh:{zh:'如：Ross',en:'e.g. Ross'},fTeaUser:{zh:'登录用户名 *',en:'Username *'},fTeaUserPh:{zh:'如：ross',en:'e.g. ross'},fTeaPwd:{zh:'登录密码 *',en:'Password *'},fTeaPwdPh:{zh:'设置登录密码',en:'Set password'},enterTeaName:{zh:'请输入老师姓名',en:'Enter name'},enterTeaUser:{zh:'请输入用户名',en:'Enter username'},enterTeaPwd:{zh:'请输入密码',en:'Enter password'},noTea:{zh:'暂无老师账号',en:'No teacher account'},teaCreated:{zh:'老师已创建',en:'Teacher created'},
 };
 let LANG = localStorage.getItem('lang')||'zh';
 function t(k){const e=I18N[k];return e?(e[LANG]||e.zh||k):k;}
@@ -305,11 +316,12 @@ function applyLang(){
   $('bilTitle').textContent=t('bilTitle');$('purBtn').textContent=t('addPur');$('dedBtn').textContent=t('addDed');$('bilSearch').placeholder=t('searchStu2');$('payTitle2').textContent=t('payTitle');$('paySearch').placeholder=t('searchStu2');
   $('addLessonBtn').textContent=t('evLesson').slice(0,1);$('addTrialBtn').textContent=t('evTrial').slice(0,1);$('addVisitBtn').textContent=t('evVisit').slice(0,1);
   $('lgLesson').textContent=t('lgLesson');$('lgTrial').textContent=t('lgTrial');$('lgVisit').textContent=t('lgVisit');
-  $('tb1').textContent=t('nav_dashboard');$('tb2').textContent=t('nav_students');$('tb3').textContent=t('nav_billing');$('tb4').textContent=t('nav_calendar');
+  $('tb1').textContent=t('nav_dashboard');$('tb2').textContent=t('nav_students');$('tb3').textContent=t('nav_billing');$('tb4').textContent=t('nav_calendar');$('tb5').textContent=t('nav_teacher');
+  $('teaTitle').textContent=t('teaTitle');$('teaCardTitle').textContent=t('teaCardTitle');$('addTeaBtn').textContent=t('addTeacher');
   const active=document.querySelector('.page.active')?.id?.replace('page-','');
-  const titles={dashboard:t('nav_dashboard'),students:t('nav_students'),billing:t('nav_billing'),calendar:t('nav_calendar')};
+  const titles={dashboard:t('nav_dashboard'),students:t('nav_students'),billing:t('nav_billing'),calendar:t('nav_calendar'),teacher:t('nav_teacher')};
   $('topbarTitle').textContent=titles[active]||'';
-  if(active==='dashboard')renderDashboard();if(active==='students')renderStudents();if(active==='billing'){renderBilling();renderPayments();}if(active==='calendar')renderCalendar();
+  if(active==='dashboard')renderDashboard();if(active==='students')renderStudents();if(active==='billing'){renderBilling();renderPayments();}if(active==='calendar')renderCalendar();if(active==='teacher')renderTeachers();
 }
 
 /* ===== XSS safety: escape any user-provided string before innerHTML ===== */
@@ -320,12 +332,13 @@ function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;
 const API_BASE='https://education-api-306045-11-1478620475.sh.run.tcloudbase.com';
 // Cookies are HttpOnly + Secure; sent automatically on same-origin requests.
 const API={async get(p){const r=await fetch(API_BASE+p,{credentials:'include'});if(!r.ok)throw new Error();return r.json();},async post(p,b){const r=await fetch(API_BASE+p,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error||'err');}return r.json();},async put(p,b){const r=await fetch(API_BASE+p,{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});if(!r.ok)throw new Error();return r.json();},async del(p){const r=await fetch(API_BASE+p,{method:'DELETE',credentials:'include'});if(!r.ok)throw new Error();return r.json();}};
-let _students=[],_billing=[],_purchases=[],_events=[],_dashboard=null;
+let _students=[],_billing=[],_purchases=[],_events=[],_dashboard=null,_teachers=[];
 let AUTH={id:null,role:null,name:null};
 async function refreshStudents(){_students=await API.get('/api/students');return _students;}
 async function refreshBilling(){_billing=await API.get('/api/billing');return _billing;}
 async function refreshPurchases(){_purchases=await API.get('/api/purchases');return _purchases;}
 async function refreshEvents(){_events=await API.get('/api/events');return _events;}
+async function refreshTeachers(){_teachers=await API.get('/api/teachers');return _teachers;}
 async function refreshDashboard(){_dashboard=await API.get('/api/dashboard');return _dashboard;}
 
 /* ===== Auth ===== */
@@ -350,18 +363,19 @@ function applyRoleUI(){
   const tb=document.getElementById('tabBilling'); if(tb) tb.style.display=isAdmin?'':'none';
   const rc=document.getElementById('revCard'); if(rc) rc.style.display=isAdmin?'':'none';
   const ab=document.getElementById('addStuBtn'); if(ab) ab.style.display=isAdmin?'':'none';
+  const tt=document.getElementById('tabTeacher'); if(tt) tt.style.display=isAdmin?'':'none';
 }
 
 /* ===== Tab Switch ===== */
 function switchTab(page){
-  if(page==='billing' && AUTH.role!=='admin') return;
+  if((page==='billing'||page==='teacher') && AUTH.role!=='admin') return;
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
   document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
   document.querySelector('.tab-item[data-page="'+page+'"]').classList.add('active');
-  const titles={dashboard:t('nav_dashboard'),students:t('nav_students'),billing:t('nav_billing'),calendar:t('nav_calendar')};
+  const titles={dashboard:t('nav_dashboard'),students:t('nav_students'),billing:t('nav_billing'),calendar:t('nav_calendar'),teacher:t('nav_teacher')};
   document.getElementById('topbarTitle').textContent=titles[page]||'';
-  if(page==='dashboard')renderDashboard();if(page==='students')renderStudents();if(page==='billing'){renderBilling();renderPayments();}if(page==='calendar')renderCalendar();
+  if(page==='dashboard')renderDashboard();if(page==='students')renderStudents();if(page==='billing'){renderBilling();renderPayments();}if(page==='calendar')renderCalendar();if(page==='teacher')renderTeachers();
 }
 
 /* ===== Helpers ===== */
@@ -559,6 +573,31 @@ async function saveEvent(id){
   try{if(id)await API.put('/api/events/'+id,{type,student_id:sid,date,time,title});else await API.post('/api/events',{type,student_id:sid,date,time,title});closeSheet();await refreshEvents();renderCalendar();renderDashboard();}catch(e){alert(e.message);}}
 async function deleteEvent(id){if(!confirm(t('confirmDelEv')))return;try{await API.del('/api/events/'+id);closeSheet();await refreshEvents();renderCalendar();renderDashboard();}catch{alert(t('delErr'));}}
 
+/* ===== Teacher (Admin only) ===== */
+function renderTeachers(){
+  const el=document.getElementById('teaList');
+  if(_teachers.length===0){el.innerHTML='<div class="empty">'+t('noTea')+'</div>';return;}
+  el.innerHTML=_teachers.map(s=>'<div class="list-item"><div class="li-row"><div class="li-main"><div class="li-title">'+esc(s.name)+'</div><div class="li-sub">@'+esc(s.username)+'</div></div></div></div>').join('');
+}
+function openTeacherModal(){
+  const html='<div class="overlay" onclick="if(event.target===this)closeSheet()"><div class="sheet"><h3>'+t('addTeacher')+'</h3>'+
+    '<div class="form-group"><label>'+t('fTeaName')+'</label><input type="text" id="teaName" placeholder="'+t('fTeaNamePh')+'"></div>'+
+    '<div class="form-group"><label>'+t('fTeaUser')+'</label><input type="text" id="teaUser" placeholder="'+t('fTeaUserPh')+'"></div>'+
+    '<div class="form-group"><label>'+t('fTeaPwd')+'</label><input type="password" id="teaPwd" placeholder="'+t('fTeaPwdPh')+'"></div>'+
+    '<div class="sheet-actions"><button class="btn btn-outline" onclick="closeSheet()">'+t('cancel')+'</button><button class="btn btn-primary" onclick="saveTeacher()">'+t('save')+'</button></div></div></div>';
+  document.getElementById('sheetContainer').innerHTML=html;
+}
+async function saveTeacher(){
+  const name=document.getElementById('teaName').value.trim();
+  const username=document.getElementById('teaUser').value.trim();
+  const password=document.getElementById('teaPwd').value;
+  if(!name){alert(t('enterTeaName'));return;}
+  if(!username){alert(t('enterTeaUser'));return;}
+  if(!password){alert(t('enterTeaPwd'));return;}
+  try{ const tea=await API.post('/api/teachers',{username,password,name}); closeSheet(); await refreshTeachers(); renderTeachers(); alert(t('teaCreated')+': '+tea.username+' / '+tea.name); }
+  catch(e){ alert(e.message||t('saveErr')); }
+}
+
 /* ===== Render All ===== */
 async function renderAll(){
   try{
@@ -569,6 +608,7 @@ async function renderAll(){
       await refreshBilling(); await refreshPurchases();
       renderBilling(); renderPayments();
     }
+    await refreshTeachers(); renderTeachers();
     await refreshEvents(); renderCalendar();
   }catch(e){console.error(e);}
 }
