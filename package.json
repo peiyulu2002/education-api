@@ -11,6 +11,8 @@
     "express": "^4.21.0",
     "cors": "^2.8.5",
     "bcryptjs": "^2.4.3",
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^2.7.0",
+    "jsonwebtoken": "^9.0.2",
+    "cookie-parser": "^1.4.7"
   }
 }

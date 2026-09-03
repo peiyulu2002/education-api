@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#4A90D9">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Pretty English">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="icon" type="image/png" href="icon-192.png">
+<html lang="zh-CN" data-page-node-id="XlLXJWXRJi766FoXnju7Mf">
+<head data-page-node-id="EByuQvqLm26ENuam0udSgl">
+<meta charset="UTF-8" data-page-node-id="Rqk7dQQ5vfJeFMxDRadqlK">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="WAD0mFYhhV1DwJU0TYRVpS">
+<meta name="theme-color" content="#4A90D9" data-page-node-id="bFBw2XEcDo7wJryzGHPAFz">
+<meta name="apple-mobile-web-app-capable" content="yes" data-page-node-id="CYUsVNnO26wjaYjh71nsgz">
+<meta name="apple-mobile-web-app-status-bar-style" content="default" data-page-node-id="zteAPfqWOHVdCPRtakxq6j">
+<meta name="apple-mobile-web-app-title" content="Pretty English" data-page-node-id="BCr4raOEsxkhBa1ambJs0A">
+<link rel="manifest" href="manifest.json" data-page-node-id="28G1QyBZZ5KSM71u7L0lvp">
+<link rel="apple-touch-icon" href="icon-192.png" data-page-node-id="nn2xrM51qG9L3bPfBrpquA">
+<link rel="icon" type="image/png" href="icon-192.png" data-page-node-id="TLJUQW6CkZBBbnQjVZnP6d">
 <title>Pretty English</title>
 <style>
   :root {
@@ -24,8 +24,24 @@
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
   body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background:var(--bg-page); color:var(--text-main); font-size:15px; line-height:1.5; }
 
+  /* ===== Login ===== */
+  #loginPage { position:fixed; inset:0; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); display:flex; align-items:center; justify-content:center; z-index:9999; }
+  .login-box { background:#fff; border-radius:20px; padding:36px 28px; width:90%; max-width:360px; box-shadow:0 20px 60px rgba(0,0,0,0.3); text-align:center; }
+  .login-box .logo { font-size:48px; margin-bottom:12px; }
+  .login-box h2 { font-size:20px; margin-bottom:6px; }
+  .login-box .sub { color:var(--text-sub); margin-bottom:24px; font-size:13px; }
+  .login-box input { width:100%; padding:14px 16px; border:1px solid var(--border); border-radius:10px; font-size:15px; margin-bottom:12px; outline:none; }
+  .login-box input:focus { border-color:var(--primary); }
+  .login-box .btn-login { width:100%; padding:14px; background:var(--primary); color:#fff; border:none; border-radius:10px; font-size:16px; cursor:pointer; }
+  .login-box .btn-login:active { background:var(--primary-dark); }
+  .login-hint { margin-top:14px; font-size:12px; color:#fff; opacity:.85; }
+  .login-err { color:var(--danger); font-size:12px; margin-top:8px; min-height:14px; }
+  .lang-switch-login { margin-top:18px; display:flex; justify-content:center; gap:4px; }
+  .lang-switch-login button { background:transparent; border:1px solid rgba(255,255,255,.6); border-radius:6px; padding:4px 14px; font-size:12px; color:#fff; cursor:pointer; }
+  .lang-switch-login button.active { background:#fff; color:var(--primary); border-color:#fff; }
+
   /* ===== App Layout ===== */
-  #app { display:flex; flex-direction:column; min-height:100vh; }
+  #app { display:none; flex-direction:column; min-height:100vh; }
 
   /* Top bar */
   .topbar { height:52px; background:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 16px; position:sticky; top:0; z-index:50; border-bottom:1px solid var(--border); }
@@ -34,6 +50,7 @@
   .lang-switch { display:flex; gap:2px; }
   .lang-switch button { background:transparent; border:1px solid var(--border); border-radius:4px; padding:2px 8px; font-size:11px; color:var(--text-sub); cursor:pointer; }
   .lang-switch button.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+  .logout-btn { color:var(--danger); font-size:13px; cursor:pointer; background:none; border:none; }
 
   /* Pages */
   .page-area { flex:1; padding-bottom:70px; overflow-y:auto; }
@@ -142,97 +159,111 @@
   .sub-list-item:last-child { border:none; }
 </style>
 </head>
-<body>
+<body data-page-node-id="3fRr6x0ruEF6EMkfwfyV1D">
 
-<!-- Login removed: app opens directly into the main interface -->
+<!-- ===== Login ===== -->
+<div id="loginPage" data-page-node-id="jLtDxHQTSkxD9Qoe1hbtUv">
+  <div class="login-box">
+    <div class="logo">📚</div>
+    <h2 id="loginTitle">Pretty English</h2>
+    <div class="sub" id="loginSub">管理后台 · 请登录</div>
+    <input type="text" id="loginUser" placeholder="用户名" autocomplete="username">
+    <input type="password" id="loginPwd" placeholder="密码" autocomplete="current-password">
+    <button class="btn-login" id="loginBtn" onclick="doLogin()">登录</button>
+    <div class="login-err" id="loginErr"></div>
+    <div class="login-hint" id="loginHint">默认账号: admin / admin123</div>
+    <div class="lang-switch-login"><button id="langZhLogin" onclick="setLang('zh')">中</button><button id="langEnLogin" onclick="setLang('en')">EN</button></div>
+  </div>
+</div>
 
 <!-- ===== App ===== -->
-<div id="app">
-  <div class="topbar">
-    <div class="topbar-title" id="topbarTitle">工作台</div>
-      <div class="topbar-right">
-        <div class="lang-switch"><button id="langZh" class="active" onclick="setLang('zh')">中</button><button id="langEn" onclick="setLang('en')">EN</button></div>
+<div id="app" data-page-node-id="appMain">
+  <div class="topbar" data-page-node-id="BTdmrcRd6iM4dcmpdRgxUS">
+    <div class="topbar-title" id="topbarTitle" data-page-node-id="Oj2MzJpaeUeFzowtzpxbbL">工作台</div>
+      <div class="topbar-right" data-page-node-id="nkjJfXqUfOi5fvXqamFKE7">
+        <button class="logout-btn" id="logoutBtn" onclick="doLogout()">退出</button>
+        <div class="lang-switch" data-page-node-id="dRC6hiPz7xw0vyMscQEZMc"><button id="langZh" class="active" onclick="setLang('zh')" data-page-node-id="fLCzLmU7UxP7s87FEGxpPA">中</button><button id="langEn" onclick="setLang('en')" data-page-node-id="OC1a5t7mE0Xx4DDJlQHlim">EN</button></div>
       </div>
   </div>
 
-  <div class="page-area">
+  <div class="page-area" data-page-node-id="E94QCw07zGGKGhLrita3gN">
     <!-- Dashboard -->
-    <div class="page active" id="page-dashboard">
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-label" id="sL1">学员总数</div><div class="stat-value" id="statStudents">0</div></div>
-        <div class="stat-card"><div class="stat-label" id="sL2">本月排课</div><div class="stat-value" id="statLessons">0</div></div>
-        <div class="stat-card"><div class="stat-label" id="sL3">累计收费</div><div class="stat-value success" id="statRevenue">¥0</div></div>
-        <div class="stat-card"><div class="stat-label" id="sL4">课时预警</div><div class="stat-value danger" id="statWarning">0</div></div>
+    <div class="page active" id="page-dashboard" data-page-node-id="EAIQuaQlrRmuqhQ2LPE0an">
+      <div class="stats-grid" data-page-node-id="2kDZCZLBqi7yi7UnrMNbmc">
+        <div class="stat-card" data-page-node-id="Mt6ct594fIOL4vBvswq2FQ"><div class="stat-label" id="sL1" data-page-node-id="wACOcVudkSPALheqKCyd1v">学员总数</div><div class="stat-value" id="statStudents" data-page-node-id="pq50mFtEBx3nCKwq8GLcwn">0</div></div>
+        <div class="stat-card" data-page-node-id="DqNjaabakFQXAsq2BjFEmJ"><div class="stat-label" id="sL2" data-page-node-id="3iL6WGM0zq9kcoU2jhzi6O">本月排课</div><div class="stat-value" id="statLessons" data-page-node-id="zCKe0323ah06v47aiqtyuY">0</div></div>
+        <div class="stat-card" id="revCard" data-page-node-id="QwavisB06ogepOkfIUKZNU"><div class="stat-label" id="sL3" data-page-node-id="IIuCiCeo1qEMMAiuEzTsly">累计收费</div><div class="stat-value success" id="statRevenue" data-page-node-id="GGU8INpGrzD3O4uqwx55GP">¥0</div></div>
+        <div class="stat-card" data-page-node-id="ObFIB079WR7E5Kn9ryeOEx"><div class="stat-label" id="sL4" data-page-node-id="LnXYQCWWNZO6RUMmuCVj9B">课时预警</div><div class="stat-value danger" id="statWarning" data-page-node-id="KubrQi4WXiW3EBRSELD9H9">0</div></div>
       </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title" id="warnTitle">课时预警</div><button class="btn btn-outline btn-sm" id="viewAllBtn" onclick="switchTab('students')">全部</button></div>
-        <div id="warningList"></div>
+      <div class="card" data-page-node-id="HpbNW8mevONcV8vOFurX5J">
+        <div class="card-header" data-page-node-id="FaGtzWurkLFCyHf2N7CRGk"><div class="card-title" id="warnTitle" data-page-node-id="u9zkGLUEUuNyZEljEuRFBZ">课时预警</div><button class="btn btn-outline btn-sm" id="viewAllBtn" onclick="switchTab('students')" data-page-node-id="iu4n4b5CB1WrlHXFG4L3Fu">全部</button></div>
+        <div id="warningList" data-page-node-id="8SnWhCiEr8FhfmOt30G5yF"></div>
       </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title" id="todayTitle">今日课程</div></div>
-        <div id="todayLessons"></div>
+      <div class="card" data-page-node-id="gJ3CIiweEKdA5FnuCWsOjD">
+        <div class="card-header" data-page-node-id="nDT8C3KcXj9530mldhpamS"><div class="card-title" id="todayTitle" data-page-node-id="fnIsRSL95lgoW4wUglAF6l">今日课程</div></div>
+        <div id="todayLessons" data-page-node-id="fYsPQGPEdd4YO0OQegG6ok"></div>
       </div>
     </div>
 
     <!-- Students -->
-    <div class="page" id="page-students">
-      <div style="padding:12px 16px 8px; display:flex; justify-content:space-between; align-items:center;">
-        <div style="font-size:17px; font-weight:700;" id="stuTitle">学员档案</div>
-        <button class="btn btn-primary btn-sm" id="addStuBtn" onclick="openStudentModal()">+ 新增</button>
+    <div class="page" id="page-students" data-page-node-id="tKPuW1Fpnv6gEqUSMiUl0Q">
+      <div style="padding:12px 16px 8px; display:flex; justify-content:space-between; align-items:center;" data-page-node-id="bVj8XAiFuZomwx9n58WQZK">
+        <div style="font-size:17px; font-weight:700;" id="stuTitle" data-page-node-id="X7ueMi6RAYyG6ltoNGXfsN">学员档案</div>
+        <button class="btn btn-primary btn-sm" id="addStuBtn" onclick="openStudentModal()" data-page-node-id="LxVHLlrxCTnlfh0kaww089">+ 新增</button>
       </div>
-      <div class="search-bar"><input type="text" id="stuSearch" placeholder="搜索姓名/地址..." oninput="renderStudents()"></div>
-      <div id="stuList"></div>
+      <div class="search-bar" data-page-node-id="AwNcPsDG2phUnLGtCrs9CX"><input type="text" id="stuSearch" placeholder="搜索姓名/地址..." oninput="renderStudents()" data-page-node-id="LD0019Lcx89hVZYFMHybJF"></div>
+      <div id="stuList" data-page-node-id="faCOXUvGArYebehgAkAL4G"></div>
     </div>
 
     <!-- Billing -->
-    <div class="page" id="page-billing">
-      <div style="padding:12px 16px 8px; display:flex; justify-content:space-between; align-items:center;">
-        <div style="font-size:17px; font-weight:700;" id="bilTitle">课时收费</div>
-        <div style="display:flex; gap:6px;">
-          <button class="btn btn-success btn-sm" id="purBtn" onclick="openPurchaseModal()">+ 购课</button>
-          <button class="btn btn-primary btn-sm" id="dedBtn" onclick="openDeductModal()">+ 扣课</button>
+    <div class="page" id="page-billing" data-page-node-id="RdgslvmUGqK8EgO4iLjdHR">
+      <div style="padding:12px 16px 8px; display:flex; justify-content:space-between; align-items:center;" data-page-node-id="DGAtr2074oYlYeUDPqFLvM">
+        <div style="font-size:17px; font-weight:700;" id="bilTitle" data-page-node-id="vgkoVfdQLmZXeMdwWfEZSJ">课时收费</div>
+        <div style="display:flex; gap:6px;" data-page-node-id="ZEjlzhEqZd2z9t3OuFKXmB">
+          <button class="btn btn-success btn-sm" id="purBtn" onclick="openPurchaseModal()" data-page-node-id="KSB9A1M8OxFHLdwnABjtDK">+ 购课</button>
+          <button class="btn btn-primary btn-sm" id="dedBtn" onclick="openDeductModal()" data-page-node-id="IzHH3svBzZzaSevpv2HFzu">+ 扣课</button>
         </div>
       </div>
-      <div class="search-bar"><input type="text" id="bilSearch" placeholder="搜索学员..." oninput="renderBilling()"></div>
-      <div id="bilList"></div>
-      <div style="margin:20px 16px 12px; font-size:15px; font-weight:700;" id="payTitle2">收费记录</div>
-      <div class="search-bar"><input type="text" id="paySearch" placeholder="搜索学员..." oninput="renderPayments()"></div>
-      <div id="payList"></div>
+      <div class="search-bar" data-page-node-id="gy049BavMMffSJFyimn6Yo"><input type="text" id="bilSearch" placeholder="搜索学员..." oninput="renderBilling()" data-page-node-id="Z04nOVohzNAiQFnafSNYkK"></div>
+      <div id="bilList" data-page-node-id="W2Hl9sep2n8U6EV9iVve0V"></div>
+      <div style="margin:20px 16px 12px; font-size:15px; font-weight:700;" id="payTitle2" data-page-node-id="e5tRrDUvI75E9dSm1UGg3O">收费记录</div>
+      <div class="search-bar" data-page-node-id="oSRXVI2DFrbDncUQLPz4l7"><input type="text" id="paySearch" placeholder="搜索学员..." oninput="renderPayments()" data-page-node-id="vkUwTVkP6elzmMBnlaIgaX"></div>
+      <div id="payList" data-page-node-id="pVJZstbNXi2MQvnjQTTePU"></div>
     </div>
 
     <!-- Calendar -->
-    <div class="page" id="page-calendar">
-      <div class="cal-toolbar">
-        <div class="cal-nav">
-          <button id="calPrev" onclick="changeMonth(-1)">‹</button>
-          <span class="cal-month-label" id="calMonthLabel"></span>
-          <button id="calNext" onclick="changeMonth(1)">›</button>
+    <div class="page" id="page-calendar" data-page-node-id="LJSYWH66BrP1Tg3P8wUXuW">
+      <div class="cal-toolbar" data-page-node-id="DFXdwChYGZ83kKqeQKTSJv">
+        <div class="cal-nav" data-page-node-id="ClDL2oDTvol9QQkeGz9cQU">
+          <button id="calPrev" onclick="changeMonth(-1)" data-page-node-id="7PI49Av4Ou9zen1pLkGT9W">‹</button>
+          <span class="cal-month-label" id="calMonthLabel" data-page-node-id="pY209xuxaYqedHHz9Cpc65"></span>
+          <button id="calNext" onclick="changeMonth(1)" data-page-node-id="aZgu9rAWFjO5bxnQkWfvuB">›</button>
         </div>
-        <div style="display:flex; gap:4px;">
-          <button class="btn btn-primary btn-sm" id="addLessonBtn" onclick="openEventModal('','lesson')">课</button>
-          <button class="btn btn-outline btn-sm" id="addTrialBtn" onclick="openEventModal('','trial')">试</button>
-          <button class="btn btn-outline btn-sm" id="addVisitBtn" onclick="openEventModal('','visit')">访</button>
+        <div style="display:flex; gap:4px;" data-page-node-id="HUE0GVuAl37jhmMfvHGTX6">
+          <button class="btn btn-primary btn-sm" id="addLessonBtn" onclick="openEventModal('','lesson')" data-page-node-id="UTFzzeQNzO6YT8gTVMkU69">课</button>
+          <button class="btn btn-outline btn-sm" id="addTrialBtn" onclick="openEventModal('','trial')" data-page-node-id="GgT0aULWe7rLkU1d78ufW1">试</button>
+          <button class="btn btn-outline btn-sm" id="addVisitBtn" onclick="openEventModal('','visit')" data-page-node-id="bat8K75CmStuppYaAYlsuz">访</button>
         </div>
       </div>
-      <div class="cal-grid" id="calGrid"></div>
-      <div class="cal-legend">
-        <span><span class="dot" style="background:#D6E4FF"></span><span id="lgLesson">课程</span></span>
-        <span><span class="dot" style="background:#FFF0D6"></span><span id="lgTrial">试听</span></span>
-        <span><span class="dot" style="background:#E8F8F0"></span><span id="lgVisit">回访</span></span>
+      <div class="cal-grid" id="calGrid" data-page-node-id="Ua65TNyZ73QDzVT32MrElK"></div>
+      <div class="cal-legend" data-page-node-id="8VfehpxmCV31EPmgy3P91t">
+        <span data-page-node-id="yNeMLH8U4BqLH0ZclIce3p"><span class="dot" style="background:#D6E4FF" data-page-node-id="9iOatgi3Gw4LPUDF9SHECM"></span><span id="lgLesson" data-page-node-id="Y6eGeFBi8Ht8NLmij9nNuw">课程</span></span>
+        <span data-page-node-id="pwVSQzAtwbAtxlWGCqQIc2"><span class="dot" style="background:#FFF0D6" data-page-node-id="u0buXBNVtgnY6wXIG9TfSD"></span><span id="lgTrial" data-page-node-id="dq7sJcpS83u3ahHMdWLEdf">试听</span></span>
+        <span data-page-node-id="j2XiW2AuOLMA7Ut1MTYr7v"><span class="dot" style="background:#E8F8F0" data-page-node-id="M4BgbvuO6c25Zt74pOgwcr"></span><span id="lgVisit" data-page-node-id="zsE6bVXHBqGetexEIjV5EC">回访</span></span>
       </div>
     </div>
   </div>
 
   <!-- Tab Bar -->
-  <div class="tab-bar">
-    <div class="tab-item active" data-page="dashboard" onclick="switchTab('dashboard')"><span class="tab-icon">🏠</span><span class="tab-label" id="tb1">工作台</span></div>
-    <div class="tab-item" data-page="students" onclick="switchTab('students')"><span class="tab-icon">👤</span><span class="tab-label" id="tb2">学员</span></div>
-    <div class="tab-item" data-page="billing" onclick="switchTab('billing')"><span class="tab-icon">💰</span><span class="tab-label" id="tb3">收费</span></div>
-    <div class="tab-item" data-page="calendar" onclick="switchTab('calendar')"><span class="tab-icon">📅</span><span class="tab-label" id="tb4">日历</span></div>
+  <div class="tab-bar" data-page-node-id="yiuS0XLChwKas6rYF5Qbke">
+    <div class="tab-item active" data-page="dashboard" onclick="switchTab('dashboard')" data-page-node-id="TqqSb5QTPUXQt006pyma3b"><span class="tab-icon" data-page-node-id="UUWDGKuHZ553qZnLsUxVwk">🏠</span><span class="tab-label" id="tb1" data-page-node-id="oiNinICCaSJAQfLa94Gd7k">工作台</span></div>
+    <div class="tab-item" data-page="students" onclick="switchTab('students')" data-page-node-id="MxtQCelF6XfYIFOB8SNMAa"><span class="tab-icon" data-page-node-id="tSxHgQESfR9iL0AvQXd1HX">👤</span><span class="tab-label" id="tb2" data-page-node-id="GcA2A8kokyJXFtnGc23qXH">学员</span></div>
+    <div class="tab-item" id="tabBilling" data-page="billing" onclick="switchTab('billing')" data-page-node-id="EvuNCrTTh1Grt40oHfaAzd"><span class="tab-icon" data-page-node-id="cRNWVfEQMSuFFIGvexu46M">💰</span><span class="tab-label" id="tb3" data-page-node-id="uWJfmJ2q08I7PVtX0rYhMH">收费</span></div>
+    <div class="tab-item" data-page="calendar" onclick="switchTab('calendar')" data-page-node-id="mcylWQh6NjouqJQAtEpGZv"><span class="tab-icon" data-page-node-id="YpAS7CskNbrGlMDV6XJX7J">📅</span><span class="tab-label" id="tb4" data-page-node-id="UxND6hPRMK6ZrQjv2u75bE">日历</span></div>
   </div>
 </div>
 
-<div id="sheetContainer"></div>
+<div id="sheetContainer" data-page-node-id="QejCnEmVHMm0JVeS5yUnsM"></div>
 
 <script>
 /* ===== i18n ===== */
@@ -240,11 +271,12 @@ const I18N = {
   appTitle:{zh:'Pretty English',en:'Pretty English'},
   logout:{zh:'退出',en:'Logout'},
   nav_dashboard:{zh:'工作台',en:'Dashboard'},nav_students:{zh:'学员',en:'Students'},nav_billing:{zh:'收费',en:'Billing'},nav_calendar:{zh:'日历',en:'Calendar'},
+  loginTitle:{zh:'Pretty English',en:'Pretty English'},loginSub:{zh:'管理后台 · 请登录',en:'Admin · Sign In'},loginBtn:{zh:'登录',en:'Sign In'},loginHint:{zh:'默认账号: admin / admin123',en:'Default: admin / admin123'},loginUserPh:{zh:'用户名',en:'Username'},loginPwdPh:{zh:'密码',en:'Password'},loginError:{zh:'用户名或密码错误',en:'Invalid credentials'},
   stat_students:{zh:'学员总数',en:'Students'},stat_lessons:{zh:'本月排课',en:'This Month'},stat_revenue:{zh:'累计收费',en:'Revenue'},stat_warning:{zh:'课时预警',en:'Low Hours'},
   warnTitle:{zh:'课时预警',en:'Low-Hour Alerts'},viewAll:{zh:'全部',en:'All'},todayTitle:{zh:'今日课程',en:"Today's Classes"},noWarn:{zh:'暂无预警',en:'No alerts'},noToday:{zh:'今日无安排',en:'Nothing today'},
   stuTitle:{zh:'学员档案',en:'Students'},addStudent:{zh:'+ 新增',en:'+ Add'},searchStu:{zh:'搜索姓名/地址...',en:'Search...'},noStu:{zh:'暂无学员',en:'No students'},
   name:{zh:'姓名',en:'Name'},grade:{zh:'年级',en:'Grade'},address:{zh:'地址',en:'Address'},remaining:{zh:'剩余课时',en:'Remaining'},used:{zh:'已用',en:'Used'},status:{zh:'状态',en:'Status'},
-  edit:{zh:'编辑',en:'Edit'},delete:{zh:'删除',en:'Delete'},detail:{zh:'详情',en:'Detail'},buy:{zh:'购课',en:'Buy'},deduct:{zh:'扣课',en:'Deduct'},
+  edit:{zh:'编辑',en:'Edit'},delete:{zh:'删除',en:'Delete'},detail:{zh:'详情',en:'Detail'},buy:{zh:'购课',en:'Buy'},deduct:{zh:'扣课',en:'Deduct'},feedback:{zh:'沟通备注',en:'Notes'},writeFeedback:{zh:'写反馈',en:'Feedback'},
   addStu:{zh:'新增学员',en:'Add Student'},editStu:{zh:'编辑学员',en:'Edit Student'},fName:{zh:'姓名 *',en:'Name *'},fGrade:{zh:'年级',en:'Grade'},fAddress:{zh:'家庭住址',en:'Address'},fAddressPh:{zh:'如：朝阳区望京',en:'e.g. Chaoyang'},fNeed:{zh:'客户需求',en:'Needs'},fNeedPh:{zh:'如：提高英语阅读',en:'e.g. Reading'},fFeedback:{zh:'沟通备注',en:'Notes'},fFeedbackPh:{zh:'沟通记录',en:'Notes'},cancel:{zh:'取消',en:'Cancel'},save:{zh:'保存',en:'Save'},close:{zh:'关闭',en:'Close'},enterName:{zh:'请输入姓名',en:'Enter name'},confirmDelStu:{zh:'确认删除该学员？',en:'Delete student?'},
   g_nursery:{zh:'托班',en:'Nursery'},g_kindergarten:{zh:'幼儿园',en:'Kindergarten'},g_primary13:{zh:'小学1-3年级',en:'Primary 1-3'},g_primary36:{zh:'小学3-6年级',en:'Primary 4-6'},g_junior:{zh:'初中',en:'Junior High'},g_senior:{zh:'高中',en:'Senior High'},g_adult:{zh:'成人',en:'Adult'},
   stuDetail:{zh:'学员详情',en:'Detail'},dRemaining:{zh:'剩余',en:'Remaining'},dPaid:{zh:'累计付费',en:'Paid'},dUsed:{zh:'累计上课',en:'Used'},lessonRecords:{zh:'📝 上课记录',en:'📝 Lessons'},purchaseRecords:{zh:'💰 购课记录',en:'💰 Purchases'},noLessonRec:{zh:'暂无上课记录',en:'No lessons'},noPurRec:{zh:'暂无购课记录',en:'No purchases'},none:{zh:'暂无',en:'None'},
@@ -264,6 +296,9 @@ function setLang(l){LANG=l;localStorage.setItem('lang',l);applyLang();}
 function applyLang(){
   const $=id=>document.getElementById(id);
   $('langZh').classList.toggle('active',LANG==='zh');$('langEn').classList.toggle('active',LANG==='en');
+  $('loginTitle').textContent=t('loginTitle');$('loginSub').textContent=t('loginSub');$('loginBtn').textContent=t('loginBtn');$('loginHint').textContent=t('loginHint');$('loginUser').placeholder=t('loginUserPh');$('loginPwd').placeholder=t('loginPwdPh');
+  $('langZhLogin').classList.toggle('active',LANG==='zh');$('langEnLogin').classList.toggle('active',LANG==='en');
+  $('logoutBtn').textContent=t('logout');
   $('sL1').textContent=t('stat_students');$('sL2').textContent=t('stat_lessons');$('sL3').textContent=t('stat_revenue');$('sL4').textContent=t('stat_warning');
   $('warnTitle').textContent=t('warnTitle');$('viewAllBtn').textContent=t('viewAll');$('todayTitle').textContent=t('todayTitle');
   $('stuTitle').textContent=t('stuTitle');$('addStuBtn').textContent=t('addStudent');$('stuSearch').placeholder=t('searchStu');
@@ -277,22 +312,49 @@ function applyLang(){
   if(active==='dashboard')renderDashboard();if(active==='students')renderStudents();if(active==='billing'){renderBilling();renderPayments();}if(active==='calendar')renderCalendar();
 }
 
+/* ===== XSS safety: escape any user-provided string before innerHTML ===== */
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
 /* ===== API ===== */
 // Deployed CloudBase backend base URL. Change this in one place to repoint the app.
 const API_BASE='https://education-api-306045-11-1478620475.sh.run.tcloudbase.com';
-const API={async get(p){const r=await fetch(API_BASE+p);if(!r.ok)throw new Error();return r.json();},async post(p,b){const r=await fetch(API_BASE+p,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error||'err');}return r.json();},async put(p,b){const r=await fetch(API_BASE+p,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});if(!r.ok)throw new Error();return r.json();},async del(p){const r=await fetch(API_BASE+p,{method:'DELETE'});if(!r.ok)throw new Error();return r.json();}};
+// Cookies are HttpOnly + Secure; sent automatically on same-origin requests.
+const API={async get(p){const r=await fetch(API_BASE+p,{credentials:'include'});if(!r.ok)throw new Error();return r.json();},async post(p,b){const r=await fetch(API_BASE+p,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error||'err');}return r.json();},async put(p,b){const r=await fetch(API_BASE+p,{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});if(!r.ok)throw new Error();return r.json();},async del(p){const r=await fetch(API_BASE+p,{method:'DELETE',credentials:'include'});if(!r.ok)throw new Error();return r.json();}};
 let _students=[],_billing=[],_purchases=[],_events=[],_dashboard=null;
+let AUTH={id:null,role:null,name:null};
 async function refreshStudents(){_students=await API.get('/api/students');return _students;}
 async function refreshBilling(){_billing=await API.get('/api/billing');return _billing;}
 async function refreshPurchases(){_purchases=await API.get('/api/purchases');return _purchases;}
 async function refreshEvents(){_events=await API.get('/api/events');return _events;}
 async function refreshDashboard(){_dashboard=await API.get('/api/dashboard');return _dashboard;}
 
-/* ===== Auth (login disabled: app opens directly; backend /api/login retained for future use) ===== */
-async function showApp(){document.getElementById('app').style.display='flex';applyLang();await renderAll();}
+/* ===== Auth ===== */
+async function boot(){
+  try{ const me=await API.get('/api/me'); AUTH=me; showApp(); }
+  catch(e){ showLogin(); }
+}
+function showLogin(){ document.getElementById('app').style.display='none'; document.getElementById('loginPage').style.display='flex'; applyLang(); }
+function showApp(){ document.getElementById('loginPage').style.display='none'; document.getElementById('app').style.display='flex'; applyLang(); applyRoleUI(); renderAll(); }
+async function doLogin(){
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPwd').value;
+  if(!u||!p){ alert('请输入用户名和密码'); return; }
+  try{ const me=await API.post('/api/login',{username:u,password:p}); AUTH=me; document.getElementById('loginErr').textContent=''; showApp(); }
+  catch(e){ document.getElementById('loginErr').textContent=t('loginError'); }
+}
+async function doLogout(){ try{ await API.post('/api/logout',{}); }catch(e){} AUTH={id:null,role:null,name:null}; showLogin(); }
+
+// Toggle admin-only UI (Billing tab, revenue card, add-student button).
+function applyRoleUI(){
+  const isAdmin=AUTH.role==='admin';
+  const tb=document.getElementById('tabBilling'); if(tb) tb.style.display=isAdmin?'':'none';
+  const rc=document.getElementById('revCard'); if(rc) rc.style.display=isAdmin?'':'none';
+  const ab=document.getElementById('addStuBtn'); if(ab) ab.style.display=isAdmin?'':'none';
+}
 
 /* ===== Tab Switch ===== */
 function switchTab(page){
+  if(page==='billing' && AUTH.role!=='admin') return;
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
   document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
@@ -316,21 +378,21 @@ async function renderDashboard(){
   document.getElementById('statWarning').textContent=d.warning_count;
   const wl=document.getElementById('warningList');
   if(d.warnings.length===0){wl.innerHTML='<div class="empty">'+t('noWarn')+'</div>';}
-  else{wl.innerHTML=d.warnings.map(s=>'<div class="list-item" style="margin:0 0 8px;"><div class="li-row"><div class="li-main"><div class="li-title">'+s.name+'</div><div class="li-sub">'+(s.grade||'-')+'</div></div><div class="li-right"><div style="color:var(--danger);font-weight:700;font-size:18px;">'+s.remaining_hours+'</div><div style="font-size:11px;color:var(--text-sub)">'+t('remaining')+'</div></div></div></div>').join('');}
+  else{wl.innerHTML=d.warnings.map(s=>'<div class="list-item" style="margin:0 0 8px;"><div class="li-row"><div class="li-main"><div class="li-title">'+esc(s.name)+'</div><div class="li-sub">'+(s.grade||'-')+'</div></div><div class="li-right"><div style="color:var(--danger);font-weight:700;font-size:18px;">'+s.remaining_hours+'</div><div style="font-size:11px;color:var(--text-sub)">'+t('remaining')+'</div></div></div></div>').join('');}
   const tl=document.getElementById('todayLessons');
   if(d.today_events.length===0){tl.innerHTML='<div class="empty">'+t('noToday')+'</div>';}
-  else{tl.innerHTML=d.today_events.map(e=>{const cls=e.type==='lesson'?'badge-info':e.type==='trial'?'badge-warning':'badge-success';return '<div class="list-item" style="margin:0 0 8px;"><div class="li-row"><div class="li-main"><div class="li-title">'+(e.student_name||'-')+'</div><div class="li-sub">'+(e.time||'')+' '+(e.title||'')+'</div></div><div><span class="badge '+cls+'">'+t('ev_'+e.type)+'</span></div></div></div>';}).join('');}
+  else{tl.innerHTML=d.today_events.map(e=>{const cls=e.type==='lesson'?'badge-info':e.type==='trial'?'badge-warning':'badge-success';return '<div class="list-item" style="margin:0 0 8px;"><div class="li-row"><div class="li-main"><div class="li-title">'+esc(e.student_name||'-')+'</div><div class="li-sub">'+(e.time||'')+' '+esc(e.title||'')+'</div></div><div><span class="badge '+cls+'">'+t('ev_'+e.type)+'</span></div></div></div>';}).join('');}
 }
 
 /* ===== Students ===== */
 function openStudentModal(id){
   const s=id?_students.find(x=>String(x.id)===String(id)):null;
   const html='<div class="overlay" onclick="if(event.target===this)closeSheet()"><div class="sheet"><h3>'+(id?t('editStu'):t('addStu'))+'</h3>'+
-    '<div class="form-group"><label>'+t('fName')+'</label><input type="text" id="sName" value="'+(s?.name||'')+'"></div>'+
+    '<div class="form-group"><label>'+t('fName')+'</label><input type="text" id="sName" value="'+esc(s?.name||'')+'"></div>'+
     '<div class="form-group"><label>'+t('fGrade')+'</label><select id="sGrade">'+gradeOpts(s?.grade)+'</select></div>'+
-    '<div class="form-group"><label>'+t('fAddress')+'</label><input type="text" id="sAddress" value="'+(s?.address||'')+'" placeholder="'+t('fAddressPh')+'"></div>'+
-    '<div class="form-group"><label>'+t('fNeed')+'</label><textarea id="sNeed" placeholder="'+t('fNeedPh')+'">'+(s?.need||'')+'</textarea></div>'+
-    '<div class="form-group"><label>'+t('fFeedback')+'</label><textarea id="sFeedback" placeholder="'+t('fFeedbackPh')+'">'+(s?.feedback||'')+'</textarea></div>'+
+    '<div class="form-group"><label>'+t('fAddress')+'</label><input type="text" id="sAddress" value="'+esc(s?.address||'')+'" placeholder="'+t('fAddressPh')+'"></div>'+
+    '<div class="form-group"><label>'+t('fNeed')+'</label><textarea id="sNeed" placeholder="'+t('fNeedPh')+'">'+esc(s?.need||'')+'</textarea></div>'+
+    '<div class="form-group"><label>'+t('fFeedback')+'</label><textarea id="sFeedback" placeholder="'+t('fFeedbackPh')+'">'+esc(s?.feedback||'')+'</textarea></div>'+
     '<div class="sheet-actions"><button class="btn btn-outline" onclick="closeSheet()">'+t('cancel')+'</button><button class="btn btn-primary" onclick="saveStudent(\''+(id||'')+'\')">'+t('save')+'</button></div></div></div>';
   document.getElementById('sheetContainer').innerHTML=html;
 }
@@ -345,10 +407,19 @@ function renderStudents(){
   let list=_students;if(q)list=list.filter(s=>s.name.toLowerCase().includes(q)||(s.address||'').toLowerCase().includes(q));
   const el=document.getElementById('stuList');
   if(list.length===0){el.innerHTML='<div class="empty">'+t('noStu')+'</div>';return;}
+  const isAdmin=AUTH.role==='admin';
   el.innerHTML=list.map(s=>{
     const r=s.remaining_hours,warn=r<=3&&r>0,empty=r<=0;
-    return '<div class="list-item"><div class="li-row"><div class="li-main"><div class="li-title">'+s.name+'</div><div class="li-sub">'+(s.grade||'-')+' · '+(s.address||'-')+'</div></div><div class="li-right"><div style="font-weight:700;font-size:16px;color:'+(warn||empty?'var(--danger)':'var(--text-main)')+'">'+r+'</div><div style="font-size:11px;color:var(--text-sub)">'+t('remaining')+'</div></div></div>'+
-      '<div class="li-actions"><button class="btn btn-outline btn-sm" onclick="viewStudentDetail('+s.id+')">'+t('detail')+'</button><button class="btn btn-outline btn-sm" onclick="openStudentModal('+s.id+')">'+t('edit')+'</button><button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="deleteStudent('+s.id+')">'+t('delete')+'</button></div></div>';
+    let actions='<button class="btn btn-outline btn-sm" onclick="viewStudentDetail('+s.id+')">'+t('detail')+'</button>';
+    if(isAdmin){
+      actions+='<button class="btn btn-outline btn-sm" onclick="openStudentModal('+s.id+')">'+t('edit')+'</button>';
+      actions+='<button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="deleteStudent('+s.id+')">'+t('delete')+'</button>';
+    } else {
+      actions+='<button class="btn btn-outline btn-sm" onclick="openFeedbackModal('+s.id+')">'+t('feedback')+'</button>';
+      actions+='<button class="btn btn-primary btn-sm" onclick="openDeductModal('+s.id+')">'+t('deduct')+'</button>';
+    }
+    return '<div class="list-item"><div class="li-row"><div class="li-main"><div class="li-title">'+esc(s.name)+'</div><div class="li-sub">'+esc(s.grade||'-')+' · '+esc(s.address||'-')+'</div></div><div class="li-right"><div style="font-weight:700;font-size:16px;color:'+(warn||empty?'var(--danger)':'var(--text-main)')+'">'+r+'</div><div style="font-size:11px;color:var(--text-sub)">'+t('remaining')+'</div></div></div>'+
+      '<div class="li-actions">'+actions+'</div></div>';
   }).join('');
 }
 
@@ -356,30 +427,46 @@ async function viewStudentDetail(id){
   try{
     const s=await API.get('/api/students/'+id);
     const r=s.remaining_hours,deductions=s.deductions||[],purchases=s.purchases||[];
+    const isAdmin=AUTH.role==='admin';
     const html='<div class="overlay" onclick="if(event.target===this)closeSheet()"><div class="sheet" style="max-height:90vh;"><h3>'+t('stuDetail')+'</h3>'+
       '<div class="detail-info">'+
-      '<div class="full"><div class="detail-label">'+t('name')+'</div><div class="detail-box">'+s.name+'</div></div>'+
-      '<div><div class="detail-label">'+t('grade')+'</div><div class="detail-box">'+(s.grade||'-')+'</div></div>'+
+      '<div class="full"><div class="detail-label">'+t('name')+'</div><div class="detail-box">'+esc(s.name)+'</div></div>'+
+      '<div><div class="detail-label">'+t('grade')+'</div><div class="detail-box">'+esc(s.grade||'-')+'</div></div>'+
       '<div><div class="detail-label">'+t('remaining')+'</div><div class="detail-box" style="color:'+(r<=3?'var(--danger)':'var(--success)')+';font-weight:700;">'+r+' '+t('lessonUnit')+'</div></div>'+
-      '<div><div class="detail-label">'+t('dPaid')+'</div><div class="detail-box">¥'+s.total_paid+'</div></div>'+
-      '<div><div class="detail-label">'+t('dUsed')+'</div><div class="detail-box">'+s.used_hours+' '+t('lessonUnit')+' / '+deductions.length+' '+t('sessions')+'</div></div>'+
-      '<div class="full"><div class="detail-label">'+t('address')+'</div><div class="detail-box">'+(s.address||'-')+'</div></div>'+
-      '<div class="full"><div class="detail-label">'+t('fNeed')+'</div><div class="detail-box">'+(s.need||t('none'))+'</div></div>'+
-      '<div class="full"><div class="detail-label">'+t('fFeedback')+'</div><div class="detail-box" style="white-space:pre-wrap;">'+(s.feedback||t('none'))+'</div></div></div>'+
+      (isAdmin?'<div><div class="detail-label">'+t('dPaid')+'</div><div class="detail-box">¥'+s.total_paid+'</div></div>':'')+
+      '<div'+(isAdmin?'':' class="full"')+'><div class="detail-label">'+t('dUsed')+'</div><div class="detail-box">'+s.used_hours+' '+t('lessonUnit')+' / '+deductions.length+' '+t('sessions')+'</div></div>'+
+      '<div class="full"><div class="detail-label">'+t('address')+'</div><div class="detail-box">'+esc(s.address||'-')+'</div></div>'+
+      '<div class="full"><div class="detail-label">'+t('fNeed')+'</div><div class="detail-box">'+esc(s.need||t('none'))+'</div></div>'+
+      '<div class="full"><div class="detail-label">'+t('fFeedback')+'</div><div class="detail-box" style="white-space:pre-wrap;">'+esc(s.feedback||t('none'))+'</div></div></div>'+
       '<div class="sub-list"><div class="sub-list-title">'+t('lessonRecords')+'</div>'+
-      (deductions.length===0?'<div class="empty" style="padding:16px;">'+t('noLessonRec')+'</div>':deductions.map(d=>'<div class="sub-list-item"><span>'+d.date+'</span><span style="font-weight:600;">'+d.hours+' '+t('lessonUnit')+'</span></div>').join(''))+
-      '</div><div class="sub-list"><div class="sub-list-title">'+t('purchaseRecords')+'</div>'+
+      (deductions.length===0?'<div class="empty" style="padding:16px;">'+t('noLessonRec')+'</div>':deductions.map(d=>'<div class="sub-list-item"><span>'+esc(d.date)+'</span><span style="font-weight:600;">'+d.hours+' '+t('lessonUnit')+'</span></div>').join(''))+
+      '</div>'+
+      (isAdmin?'<div class="sub-list"><div class="sub-list-title">'+t('purchaseRecords')+'</div>'+
       (purchases.length===0?'<div class="empty" style="padding:16px;">'+t('noPurRec')+'</div>':purchases.map(p=>'<div class="sub-list-item"><span>'+String(p.date).slice(0,10)+'</span><span style="color:var(--success);font-weight:600;">¥'+p.amount+' ('+p.total_hours+t('lessonUnit')+')</span></div>').join(''))+
-      '</div><div class="sheet-actions"><button class="btn btn-outline" onclick="closeSheet()">'+t('close')+'</button><button class="btn btn-primary" onclick="closeSheet();openStudentModal('+s.id+')">'+t('edit')+'</button></div></div></div>';
+      '</div>':'')+
+      '<div class="sheet-actions"><button class="btn btn-outline" onclick="closeSheet()">'+t('close')+'</button><button class="btn btn-primary" onclick="closeSheet();'+(isAdmin?'openStudentModal('+s.id+')':'openFeedbackModal('+s.id+')')+'">'+t('edit')+'</button></div></div></div>';
     document.getElementById('sheetContainer').innerHTML=html;
   }catch(e){alert('Error');}
+}
+
+/* ===== Teacher: feedback only ===== */
+function openFeedbackModal(id){
+  const s=_students.find(x=>String(x.id)===String(id));
+  const html='<div class="overlay" onclick="if(event.target===this)closeSheet()"><div class="sheet"><h3>'+t('writeFeedback')+'</h3>'+
+    '<div class="form-group"><label>'+t('fFeedback')+'</label><textarea id="fbf" placeholder="'+t('fFeedbackPh')+'">'+esc(s?.feedback||'')+'</textarea></div>'+
+    '<div class="sheet-actions"><button class="btn btn-outline" onclick="closeSheet()">'+t('cancel')+'</button><button class="btn btn-primary" onclick="saveFeedback('+id+')">'+t('save')+'</button></div></div></div>';
+  document.getElementById('sheetContainer').innerHTML=html;
+}
+async function saveFeedback(id){
+  const fb=document.getElementById('fbf').value;
+  try{ await API.put('/api/students/'+id,{feedback:fb}); closeSheet(); await refreshStudents(); renderStudents(); }catch(e){ alert(t('saveErr')); }
 }
 
 /* ===== Billing ===== */
 async function openPurchaseModal(){
   if(_students.length===0){alert(t('addStuFirst'));return;}
   const html='<div class="overlay" onclick="if(event.target===this)closeSheet()"><div class="sheet"><h3>'+t('purTitle')+'</h3>'+
-    '<div class="form-group"><label>'+t('fStudent')+'</label><select id="pStudent">'+_students.map(s=>'<option value="'+s.id+'">'+s.name+' ('+t('remHrs')+' '+s.remaining_hours+')</option>').join('')+'</select></div>'+
+    '<div class="form-group"><label>'+t('fStudent')+'</label><select id="pStudent">'+_students.map(s=>'<option value="'+s.id+'">'+esc(s.name)+' ('+t('remHrs')+' '+s.remaining_hours+')</option>').join('')+'</select></div>'+
     '<div class="form-row"><div class="form-group"><label>'+t('fAmount')+'</label><input type="number" id="pAmount"></div><div class="form-group"><label>'+t('fHrs')+'</label><input type="number" id="pHours"></div></div>'+
     '<div class="form-group"><label>'+t('fNote')+'</label><input type="text" id="pNote"></div>'+
     '<div class="sheet-actions"><button class="btn btn-outline" onclick="closeSheet()">'+t('cancel')+'</button><button class="btn btn-success" onclick="savePurchase()">'+t('save')+'</button></div></div></div>';
@@ -389,11 +476,12 @@ async function savePurchase(){
   const sid=parseInt(document.getElementById('pStudent').value),amt=parseFloat(document.getElementById('pAmount').value),hrs=parseFloat(document.getElementById('pHours').value),note=document.getElementById('pNote').value.trim();
   if(!amt||amt<=0){alert(t('enterAmt'));return;}if(!hrs||hrs<=0){alert(t('enterHrs'));return;}
   try{await API.post('/api/purchases',{student_id:sid,amount:amt,total_hours:hrs,note});closeSheet();await refreshStudents();await refreshBilling();await refreshPurchases();renderBilling();renderPayments();renderDashboard();}catch(e){alert(e.message);}}
+}
 
-async function openDeductModal(){
+async function openDeductModal(presetSid){
   if(_students.length===0){alert(t('addStuFirst'));return;}
   const html='<div class="overlay" onclick="if(event.target===this)closeSheet()"><div class="sheet"><h3>'+t('dedTitle')+'</h3>'+
-    '<div class="form-group"><label>'+t('fStudent')+'</label><select id="dStudent">'+_students.map(s=>'<option value="'+s.id+'">'+s.name+' ('+t('remHrs')+' '+s.remaining_hours+')</option>').join('')+'</select></div>'+
+    '<div class="form-group"><label>'+t('fStudent')+'</label><select id="dStudent" '+(presetSid?'disabled':'')+'>'+_students.map(s=>'<option value="'+s.id+'" '+(presetSid==s.id?'selected':'')+'>'+esc(s.name)+' ('+t('remHrs')+' '+s.remaining_hours+')</option>').join('')+'</select></div>'+
     '<div class="form-row"><div class="form-group"><label>'+t('fDedHrs')+'</label><input type="number" id="dHours" value="1" step="0.5"></div><div class="form-group"><label>'+t('fLesDate')+'</label><input type="date" id="dDate" value="'+new Date().toISOString().slice(0,10)+'"></div></div>'+
     '<div class="form-group"><label>'+t('fNote')+'</label><input type="text" id="dNote"></div>'+
     '<div class="sheet-actions"><button class="btn btn-outline" onclick="closeSheet()">'+t('cancel')+'</button><button class="btn btn-primary" onclick="saveDeduction()">'+t('confirm')+'</button></div></div></div>';
@@ -402,7 +490,8 @@ async function openDeductModal(){
 async function saveDeduction(){
   const sid=parseInt(document.getElementById('dStudent').value),hrs=parseFloat(document.getElementById('dHours').value),date=document.getElementById('dDate').value,note=document.getElementById('dNote').value.trim();
   if(!hrs||hrs<=0){alert(t('enterHrs'));return;}
-  try{await API.post('/api/deductions',{student_id:sid,hours,date,note});closeSheet();await refreshStudents();await refreshBilling();renderBilling();renderDashboard();}catch(e){alert(e.message);}}
+  try{await API.post('/api/deductions',{student_id:sid,hours,date,note});closeSheet();await refreshStudents();if(AUTH.role==='admin'){await refreshBilling();renderBilling();}renderDashboard();}catch(e){alert(e.message);}}
+}
 
 function renderBilling(){
   const q=(document.getElementById('bilSearch')?.value||'').toLowerCase();
@@ -411,13 +500,13 @@ function renderBilling(){
   if(list.length===0){el.innerHTML='<div class="empty">'+t('noStu2')+'</div>';return;}
   el.innerHTML=list.map(s=>{
     const r=s.remaining_hours,warn=r<=3&&r>0,empty=r<=0;
-    return '<div class="list-item"><div class="li-row"><div class="li-main"><div class="li-title">'+s.name+'</div><div class="li-sub">'+(s.grade||'-')+' · ¥'+s.total_amount+' · '+s.total_hours+t('lessonUnit')+'</div></div><div class="li-right"><div style="font-weight:700;font-size:16px;color:'+(warn||empty?'var(--danger)':'var(--text-main)')+'">'+r+'</div><div style="font-size:11px;color:var(--text-sub)">'+t('remaining')+'</div></div></div>'+
+    return '<div class="list-item"><div class="li-row"><div class="li-main"><div class="li-title">'+esc(s.name)+'</div><div class="li-sub">'+(s.grade||'-')+' · ¥'+s.total_amount+' · '+s.total_hours+t('lessonUnit')+'</div></div><div class="li-right"><div style="font-weight:700;font-size:16px;color:'+(warn||empty?'var(--danger)':'var(--text-main)')+'">'+r+'</div><div style="font-size:11px;color:var(--text-sub)">'+t('remaining')+'</div></div></div>'+
       '<div class="li-sub" style="margin-top:6px;">'+t('used')+': '+s.used_hours+' · '+t('unit')+': ¥'+s.unit_price+t('perHr')+' · '+badge(r,s.has_purchased)+'</div>'+
       '<div class="li-actions"><button class="btn btn-success btn-sm" onclick="openPurFor('+s.id+')">'+t('buy')+'</button><button class="btn btn-primary btn-sm" onclick="openDedFor('+s.id+')">'+t('deduct')+'</button><button class="btn btn-outline btn-sm" onclick="viewStudentDetail('+s.id+')">'+t('detail')+'</button></div></div>';
   }).join('');
 }
 function openPurFor(sid){openPurchaseModal();setTimeout(()=>{document.getElementById('pStudent').value=sid;},0);}
-function openDedFor(sid){openDeductModal();setTimeout(()=>{document.getElementById('dStudent').value=sid;},0);}
+function openDedFor(sid){openDeductModal(sid);}
 
 function renderPayments(){
   const q=(document.getElementById('paySearch')?.value||'').toLowerCase();
@@ -427,14 +516,14 @@ function renderPayments(){
   if(list.length===0){el.innerHTML='<div class="empty">'+t('noPay')+'</div>';return;}
   el.innerHTML=list.map(p=>{
     const unit=p.total_hours>0?Math.round(p.amount/p.total_hours):0;
-    return '<div class="list-item"><div class="li-row"><div class="li-main"><div class="li-title">'+(p.student_name||t('deleted'))+'</div><div class="li-sub">'+String(p.date).slice(0,10)+' · '+p.total_hours+t('lessonUnit')+' · ¥'+unit+t('perHr')+'</div></div><div class="li-right" style="color:var(--success);font-weight:700;font-size:16px;">¥'+p.amount+'</div></div>'+(p.note?'<div class="li-sub" style="margin-top:4px;">'+p.note+'</div>':'')+'</div>';
+    return '<div class="list-item"><div class="li-row"><div class="li-main"><div class="li-title">'+esc(p.student_name||t('deleted'))+'</div><div class="li-sub">'+String(p.date).slice(0,10)+' · '+p.total_hours+t('lessonUnit')+' · ¥'+unit+t('perHr')+'</div></div><div class="li-right" style="color:var(--success);font-weight:700;font-size:16px;">¥'+p.amount+'</div></div>'+(p.note?'<div class="li-sub" style="margin-top:4px;">'+esc(p.note)+'</div>':'')+'</div>';
   }).join('');
 }
 
 /* ===== Calendar ===== */
 let calDate=new Date();
 function renderCalendar(){
-  const y=calDate.getFullYear(),m=calCursorGetMonth();
+  const y=calDate.getFullYear(),m=calDate.getMonth();
   const mn=LANG==='zh'?['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   document.getElementById('calMonthLabel').textContent=y+t('yearSuffix')+' '+mn[m];
   const firstDay=new Date(y,m,1).getDay(),daysInMonth=new Date(y,m+1,0).getDate(),daysInPrev=new Date(y,m,0).getDate();
@@ -445,14 +534,13 @@ function renderCalendar(){
   for(let d=1;d<=daysInMonth;d++){
     const ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     const evs=_events.filter(e=>e.date===ds);
-    let evHtml=evs.slice(0,2).map(e=>{const cls=e.type==='lesson'?'lesson':e.type==='trial'?'trial':'visit';const sn=e.student_name||e.title||'';return '<div class="cal-ev '+cls+'">'+(e.time||'')+' '+sn+'</div>';}).join('');
+    let evHtml=evs.slice(0,2).map(e=>{const cls=e.type==='lesson'?'lesson':e.type==='trial'?'trial':'visit';const sn=e.student_name||e.title||'';return '<div class="cal-ev '+cls+'">'+(e.time||'')+' '+esc(sn)+'</div>';}).join('');
     html+='<div class="cal-day '+(ds===todayStr?'today':'')+'" onclick="openEventModal(\'\',\'lesson\',\''+ds+'\')"><div class="cal-day-num">'+d+'</div>'+evHtml+'</div>';
   }
   const rem=(7-((firstDay+daysInMonth)%7))%7;
   for(let i=1;i<=rem;i++)html+='<div class="cal-day other"><div class="cal-day-num">'+i+'</div></div>';
   document.getElementById('calGrid').innerHTML=html;
 }
-function calCursorGetMonth(){return calDate.getMonth();}
 function changeMonth(d){calDate.setMonth(calDate.getMonth()+d);renderCalendar();}
 
 function openEventModal(id,type,presetDate){
@@ -462,9 +550,9 @@ function openEventModal(id,type,presetDate){
   const tk='ev_'+dt;
   const html='<div class="overlay" onclick="if(event.target===this)closeSheet()"><div class="sheet"><h3>'+(id?t('evEdit'):t('evAdd'))+t(tk)+'</h3>'+
     '<div class="form-group"><label>'+t('fType')+'</label><select id="eType"><option value="lesson" '+(dt==='lesson'?'selected':'')+'>'+t('evLesson')+'</option><option value="trial" '+(dt==='trial'?'selected':'')+'>'+t('evTrial')+'</option><option value="visit" '+(dt==='visit'?'selected':'')+'>'+t('evVisit')+'</option></select></div>'+
-    '<div class="form-group"><label>'+t('fBind')+'</label><select id="eStudent"><option value="">'+t('noBind')+'</option>'+_students.map(s=>'<option value="'+s.id+'" '+(ev&&ev.student_id===s.id?'selected':'')+'>'+s.name+'</option>').join('')+'</select></div>'+
+    '<div class="form-group"><label>'+t('fBind')+'</label><select id="eStudent"><option value="">'+t('noBind')+'</option>'+_students.map(s=>'<option value="'+s.id+'" '+(ev&&ev.student_id===s.id?'selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select></div>'+
     '<div class="form-row"><div class="form-group"><label>'+t('fDate')+'</label><input type="date" id="eDate" value="'+dd+'"></div><div class="form-group"><label>'+t('fTime')+'</label><input type="time" id="eTime" value="'+(ev?.time||'')+'"></div></div>'+
-    '<div class="form-group"><label>'+t('fTitle')+'</label><input type="text" id="eTitle" value="'+(ev?.title||'')+'" placeholder="'+t('fTitlePh')+'"></div>'+
+    '<div class="form-group"><label>'+t('fTitle')+'</label><input type="text" id="eTitle" value="'+esc(ev?.title||'')+'" placeholder="'+t('fTitlePh')+'"></div>'+
     '<div class="sheet-actions">'+(id?'<button class="btn btn-danger" onclick="deleteEvent('+id+')" style="flex:0 0 auto;">'+t('delete')+'</button>':'')+'<button class="btn btn-outline" onclick="closeSheet()">'+t('cancel')+'</button><button class="btn btn-primary" onclick="saveEvent('+(id||'\'\'')+')">'+t('save')+'</button></div></div></div>';
   document.getElementById('sheetContainer').innerHTML=html;
 }
@@ -477,13 +565,21 @@ async function deleteEvent(id){if(!confirm(t('confirmDelEv')))return;try{await A
 
 /* ===== Render All ===== */
 async function renderAll(){
-  try{await refreshStudents();await refreshBilling();await refreshPurchases();await refreshEvents();await refreshDashboard();
-  renderDashboard();renderStudents();renderBilling();renderPayments();renderCalendar();}catch(e){console.error(e);}
+  try{
+    await refreshStudents();
+    await refreshDashboard();
+    renderDashboard(); renderStudents();
+    if(AUTH.role==='admin'){
+      await refreshBilling(); await refreshPurchases();
+      renderBilling(); renderPayments();
+    }
+    await refreshEvents(); renderCalendar();
+  }catch(e){console.error(e);}
 }
 
 /* ===== Init ===== */
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
-showApp();
+boot();
 </script>
 </body>
 </html>
