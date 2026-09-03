@@ -1,5 +1,5 @@
 // Pretty English - Service Worker
-const CACHE_NAME = 'pretty-english-v3';
+const CACHE_NAME = 'pretty-english-v4';
 const ASSETS = [
   './',
   './index.html',

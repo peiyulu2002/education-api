@@ -476,8 +476,6 @@ async function savePurchase(){
   const sid=parseInt(document.getElementById('pStudent').value),amt=parseFloat(document.getElementById('pAmount').value),hrs=parseFloat(document.getElementById('pHours').value),note=document.getElementById('pNote').value.trim();
   if(!amt||amt<=0){alert(t('enterAmt'));return;}if(!hrs||hrs<=0){alert(t('enterHrs'));return;}
   try{await API.post('/api/purchases',{student_id:sid,amount:amt,total_hours:hrs,note});closeSheet();await refreshStudents();await refreshBilling();await refreshPurchases();renderBilling();renderPayments();renderDashboard();}catch(e){alert(e.message);}}
-}
-
 async function openDeductModal(presetSid){
   if(_students.length===0){alert(t('addStuFirst'));return;}
   const html='<div class="overlay" onclick="if(event.target===this)closeSheet()"><div class="sheet"><h3>'+t('dedTitle')+'</h3>'+
@@ -491,8 +489,6 @@ async function saveDeduction(){
   const sid=parseInt(document.getElementById('dStudent').value),hrs=parseFloat(document.getElementById('dHours').value),date=document.getElementById('dDate').value,note=document.getElementById('dNote').value.trim();
   if(!hrs||hrs<=0){alert(t('enterHrs'));return;}
   try{await API.post('/api/deductions',{student_id:sid,hours,date,note});closeSheet();await refreshStudents();if(AUTH.role==='admin'){await refreshBilling();renderBilling();}renderDashboard();}catch(e){alert(e.message);}}
-}
-
 function renderBilling(){
   const q=(document.getElementById('bilSearch')?.value||'').toLowerCase();
   let list=_billing;if(q)list=list.filter(s=>s.name.toLowerCase().includes(q));
